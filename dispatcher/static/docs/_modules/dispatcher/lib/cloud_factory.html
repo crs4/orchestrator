@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.lib.cloud_factory &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../../index.html" />
+    <link rel="up" title="dispatcher.lib" href="../lib.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.lib.cloud_factory</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.lib.cloud_factory</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. include:: isonum.txt</span>
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details</span>
+
+<span class="sd">    Init script, here is specified a connection between user-defined drivers</span>
+<span class="sd">    and libcloud drivers</span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">dispatcher.lib</span> <span class="kn">import</span> <span class="n">Provider</span>
+
+<span class="n">DRIVERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">Provider</span><span class="o">.</span><span class="n">DUMMY</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.dummy&#39;</span><span class="p">,</span> <span class="s">&#39;DummyDriver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">OPENSTACK</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.openstack&#39;</span><span class="p">,</span> <span class="s">&#39;OpenStackDriver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">EUCALYPTUS</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.eucalyptus&#39;</span><span class="p">,</span> <span class="s">&#39;EucalyptusDriver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">EC2_US_WEST</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.ec2&#39;</span><span class="p">,</span> <span class="s">&#39;EC2_US_WEST_Driver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">EC2_EU_WEST</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.ec2&#39;</span><span class="p">,</span> <span class="s">&#39;EC2_EU_WEST_Driver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">EC2_US_EAST</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.ec2&#39;</span><span class="p">,</span> <span class="s">&#39;EC2_US_EAST_Driver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">EC2_EU_EAST</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.ec2&#39;</span><span class="p">,</span> <span class="s">&#39;EC2_EU_EAST_Driver&#39;</span><span class="p">),</span>
+
+    <span class="n">Provider</span><span class="o">.</span><span class="n">RACKSPACE</span><span class="p">:</span>
+        <span class="p">(</span><span class="s">&#39;dispatcher.lib.cloud_factory.drivers.rackspace&#39;</span><span class="p">,</span> <span class="s">&#39;RackspaceDriver&#39;</span><span class="p">),</span>
+
+
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_get_provider_driver</span><span class="p">(</span><span class="n">drivers</span><span class="p">,</span> <span class="n">provider</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a driver.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">provider</span> <span class="ow">in</span> <span class="n">drivers</span><span class="p">:</span>
+        <span class="n">mod_name</span><span class="p">,</span> <span class="n">driver_name</span> <span class="o">=</span> <span class="n">drivers</span><span class="p">[</span><span class="n">provider</span><span class="p">]</span>
+        <span class="n">_mod</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">mod_name</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="nb">locals</span><span class="p">(),</span> <span class="p">[</span><span class="n">driver_name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_mod</span><span class="p">,</span> <span class="n">driver_name</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&#39;Provider </span><span class="si">%s</span><span class="s"> does not exist&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">provider</span><span class="p">))</span>
+
+<div class="viewcode-block" id="get_driver"><a class="viewcode-back" href="../../../dispatcher.lib.cloud_factory.html#dispatcher.lib.cloud_factory.get_driver">[docs]</a><span class="k">def</span> <span class="nf">get_driver</span><span class="p">(</span><span class="n">provider</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_get_provider_driver</span><span class="p">(</span><span class="n">DRIVERS</span><span class="p">,</span> <span class="n">provider</span><span class="p">)</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.lib.helpers &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../../index.html" />
+    <link rel="up" title="dispatcher.lib" href="../lib.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.lib.helpers</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.lib.helpers</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details.</span>
+
+<span class="sd">    Various helpers, custom exceptions, login mechanism and wrappers</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">BaseHTTPServer</span>  <span class="c"># For HTTP codes.</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">HTTPException</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">_request_ctx_stack</span><span class="p">,</span> <span class="n">json</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">simplejson</span> <span class="kn">import</span> <span class="n">JSONDecodeError</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext</span> <span class="kn">import</span> <span class="n">security</span>
+<span class="kn">from</span> <span class="nn">flask.ext.security</span> <span class="kn">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">flask.ext.principal</span> <span class="kn">import</span> <span class="n">Identity</span><span class="p">,</span> <span class="n">identity_changed</span>
+<span class="kn">from</span> <span class="nn">flask.ext.login</span> <span class="kn">import</span> <span class="n">current_user</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="c">#from dispatcher.formats import render_message</span>
+<span class="kn">from</span> <span class="nn">decorator</span> <span class="kn">import</span> <span class="n">decorator</span>
+
+
+<span class="n">HTTP_CODES</span> <span class="o">=</span> <span class="n">BaseHTTPServer</span><span class="o">.</span><span class="n">BaseHTTPRequestHandler</span><span class="o">.</span><span class="n">responses</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MiddlewareException"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.MiddlewareException">[docs]</a><span class="k">class</span> <span class="nc">MiddlewareException</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cancel abortion of the current task and return with</span>
+<span class="sd">    the given message and error code.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;json&#39;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s">&#39;success&#39;</span><span class="p">,</span>
+                 <span class="n">code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;MWException(</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">): </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+        <span class="c">#self.response = render_message(request, message,</span>
+        <span class="c">#         format, state=state, code=code, url=url)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">make_response</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+                                      <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
+
+<div class="viewcode-block" id="MiddlewareException.get_response"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.MiddlewareException.get_response">[docs]</a>    <span class="k">def</span> <span class="nf">get_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span>
+
+</div></div>
+<div class="viewcode-block" id="not_implemented"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.not_implemented">[docs]</a><span class="k">def</span> <span class="nf">not_implemented</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quick function to reply with a Not implemented response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;Not implemented&#39;</span><span class="p">,</span>
+                              <span class="n">state</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">501</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="make_response"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.make_response">[docs]</a><span class="k">def</span> <span class="nf">make_response</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">other_headers</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a suitable HTML or JSON error message response.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">short_message</span><span class="p">,</span> <span class="n">long_message</span> <span class="o">=</span> <span class="n">HTTP_CODES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">status_code</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">status_code</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;2&#39;</span><span class="p">):</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s">&#39;ok&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="s">&#39;error&#39;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s">&#39;error&#39;</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;status_short_message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">short_message</span>
+        <span class="n">result</span><span class="p">[</span><span class="s">&#39;status_long_message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">long_message</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">empty_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="n">status_code</span>
+    <span class="k">if</span> <span class="n">other_headers</span><span class="p">:</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">other_headers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="c"># authentication wrapper ( embed some flask-security methods )</span>
+</div>
+<span class="k">def</span> <span class="nf">_check_token</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check token from request object, reply with a boolean to validate it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header_key</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_security</span><span class="o">.</span><span class="n">token_authentication_header</span>
+    <span class="n">args_key</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_security</span><span class="o">.</span><span class="n">token_authentication_key</span>
+    <span class="n">header_token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">header_key</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args_key</span><span class="p">,</span> <span class="n">header_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args_key</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_security</span><span class="o">.</span><span class="n">remember_token_serializer</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">serializer</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">security</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_security</span><span class="o">.</span><span class="n">datastore</span><span class="o">.</span><span class="n">find_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">encrypted_tokens</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">security</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">token</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">tokens</span>
+                           <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">active</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">encrypted_tokens</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">_get_current_object</span><span class="p">()</span>
+        <span class="n">_request_ctx_stack</span><span class="o">.</span><span class="n">top</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="n">identity_changed</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">Identity</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+
+<div class="viewcode-block" id="validate_json"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.validate_json">[docs]</a><span class="k">def</span> <span class="nf">validate_json</span><span class="p">(</span><span class="n">validate_function</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to validate and marshal the incoming JSON.</span>
+
+<span class="sd">    Sets request.json to the value returned from calling validate_function on</span>
+<span class="sd">    request.json (or default() if request.json is None). If this raises</span>
+<span class="sd">    an exception then the call stack is terminated early with a</span>
+<span class="sd">    :func:`MiddlewareException` exception</span>
+
+<span class="sd">    If request.json is None then default() is used. Note that</span>
+<span class="sd">      1) default is a callable which must create the default value</span>
+<span class="sd">         (to avoid accidental re-use of mutables)</span>
+<span class="sd">      2) the result is still passed through the validate_function</span>
+<span class="sd">         (to ensure the invariant holds)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@decorator</span>
+    <span class="k">def</span> <span class="nf">validate_with_validate_function</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span> <span class="ow">or</span> <span class="s">&quot;{}&quot;</span>
+            <span class="n">input_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&quot;Malformed JSON stream&quot;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+        <span class="c"># input_json = request.json</span>
+        <span class="k">if</span> <span class="n">input_json</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
+            <span class="n">input_json</span> <span class="o">=</span> <span class="n">default</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># request.json = validate_function(input_json)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">validate_function</span><span class="p">(</span><span class="n">input_json</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;Some key doesn&#39;t validate the schema - </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validate_with_validate_function</span>
+
+</div>
+<div class="viewcode-block" id="auth_required"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.auth_required">[docs]</a><span class="k">def</span> <span class="nf">auth_required</span><span class="p">(</span><span class="o">*</span><span class="n">auth_methods</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adaptation for security.decorators.auth_required</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">login_mechanisms</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;token&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">_check_token</span><span class="p">(),</span>
+        <span class="s">&#39;basic&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">decorators</span><span class="o">.</span><span class="n">_check_http_auth</span><span class="p">(),</span>
+        <span class="s">&#39;session&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">current_user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">decorated_view</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; decorator farm &quot;&quot;&quot;</span>
+            <span class="n">mechanisms</span> <span class="o">=</span> <span class="p">[</span><span class="n">login_mechanisms</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">auth_methods</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">mechanism</span> <span class="ow">in</span> <span class="n">mechanisms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mechanism</span> <span class="ow">and</span> <span class="n">mechanism</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;Forbidden&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">decorated_view</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+</div>
+<div class="viewcode-block" id="HTTPConnection"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.HTTPConnection">[docs]</a><span class="k">class</span> <span class="nc">HTTPConnection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to make connections and deal with web services</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">api_version</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_v</span> <span class="o">=</span> <span class="n">api_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_v_url</span> <span class="o">=</span> <span class="s">&quot;/api/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_url</span> <span class="o">=</span> <span class="s">&#39;http://</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span> <span class="ow">or</span> <span class="p">{</span><span class="s">&#39;content-type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_status</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_message</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="HTTPConnection.get_page"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.HTTPConnection.get_page">[docs]</a>    <span class="k">def</span> <span class="nf">get_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a generic call with a json response</span>
+
+<span class="sd">        + :attr:`url` is the relative url to contact, protocol and servername\</span>
+<span class="sd">                is added on the fly with what has been specified on\</span>
+<span class="sd">                initialization of the object</span>
+<span class="sd">        + :attr:`kwargs` is an attribute of optional key/value pairs, should be:</span>
+<span class="sd">            * :attr:`method`, the way to contact the server, default is &#39;get&#39;,</span>
+<span class="sd">            * :attr:`payload`, is a dictionary structure containing additional\</span>
+<span class="sd">            payload useful to the request</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_url</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_v_url</span> <span class="o">+</span> <span class="n">url</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">method</span><span class="p">](</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span>
+                                          <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_status</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_message</span> <span class="o">=</span> <span class="n">res</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c">#print str(e)</span>
+            <span class="c">#LOG.error(&quot;ORCHE is down&quot;)</span>
+            <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;the host </span><span class="si">%s</span><span class="s"> is down&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">,</span>
+                                <span class="n">state</span><span class="o">=</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">503</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+</div></div>
+<div class="viewcode-block" id="get_a_caller"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.helpers.get_a_caller">[docs]</a><span class="k">def</span> <span class="nf">get_a_caller</span><span class="p">(</span><span class="n">app_context</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    With an app_context ( to access the settings data ) this routines will</span>
+<span class="sd">    spawn a caller object to make HTTP calls.</span>
+<span class="sd">    Settings are CISTERN_* data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">app_context</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;CISTERN_HOST&#39;</span><span class="p">]</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;CISTERN_PORT&#39;</span><span class="p">]</span>
+    <span class="n">api_v</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;CISTERN_API&#39;</span><span class="p">]</span>
+    <span class="n">caller</span> <span class="o">=</span> <span class="n">HTTPConnection</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">api_v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">caller</span>
+
+
+<span class="c"># from http://flask.pocoo.org/snippets/56/</span>
+
+
+
+<span class="c"># http code reminder:</span>
+<span class="c"># http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html</span>
+<span class="c"># 201 Created</span>
+<span class="c"># 202 Accepted</span>
+<span class="c"># 301 Moved Permanently</span>
+<span class="c"># 400 Bad Request</span>
+<span class="c"># 401 Unauthorized</span>
+<span class="c"># 403 Forbidden</span>
+<span class="c"># 408 Request Timeout</span>
+<span class="c"># 500 Internal Server Error</span>
+<span class="c"># 501 Not Implemented</span>
+<span class="c"># 503 Service Unavailable</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

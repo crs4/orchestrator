@@ -1,0 +1,54 @@
+
+
+#
+# get info
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/nodes
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/images
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/flavors
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/sizes
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/cloud
+
+
+
+
+#
+# auth example
+# curl -s -X POST -H 'Content-Type: application/json' -d '{  "username": "truijllo", "password": "password" }' http://192.168.0.5:5050/api/v1/auth
+
+#
+# auth call
+# -- old
+# curl -s -X PUT -H 'Authentication-Token: WyIxIiwiNWY0ZGNjM2I1YWE3NjVkNjFkODMyN2RlYjg4MmNmOTkiXQ.BEmCvQ.dQG0Vq4uqmXHXfCEElltmXAI2ac' http://192.168.0.5:5050/api/v1/test/start
+# curl -s -X PUT -H 'X-Auth-Token: WyIxIiwiNWY0ZGNjM2I1YWE3NjVkNjFkODMyN2RlYjg4MmNmOTkiXQ.BEmCvQ.dQG0Vq4uqmXHXfCEElltmXAI2ac' http://192.168.0.5:5050/api/v1/test/start
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{ "auth_token" : "WyJ0cnVpamxsbyIsIjY5ZDRmMDhmYWIxYzI4N2IwZTQ1YzE4NTA2YzRjMWYxIl0.BE2xHQ.d6YaZ9IC8cv-W37EYmKXvoJedKI" }' http://localhost:5050/api/v1/test/start
+
+
+#
+# start & stop
+#
+# start
+# curl -s -X POST -H 'Content-Type: application/json' -d '{  "name": "cloud", "image": "7e70e978-374a-4997-a8a3-0abb8d48be7d" , "size" : "1" }' http://localhost:5050/api/v1/vm/start
+# stop
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{  "node" : "31ae5d95-f0c5-4834-bb44-6e2262398a01" }' http://localhost:5050/api/v1/vm/stop
+
+
+# assignment status
+# curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/vm/status
+#
+# assign
+# using hostname
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{ "hostname": "6abb9f0b-2dfe-456f-b66e-619ac1eb4fed", "user": "zeppolo" , "vm_type": "app di prova"}' http://localhost:5050/api/v1/vm/action/assign
+#
+# using node ( id )
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{ "node" : "3c725bdb-b575-4e0f-b21b-67b0d089867d",    "user": "zeppolo" , "vm_type": "app di prova"}' http://localhost:5050/api/v1/vm/action/assign
+
+
+#
+# release
+# using hostname
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{ "hostname": "6abb9f0b-2dfe-456f-b66e-619ac1eb4fed"}' http://localhost:5050/api/v1/vm/action/release
+# using node ( id )
+# curl -s -X PUT -H 'Content-Type: application/json' -d '{ "node": "3c725bdb-b575-4e0f-b21b-67b0d089867d" }' http://localhost:5050/api/v1/vm/action/release
+
+#
+

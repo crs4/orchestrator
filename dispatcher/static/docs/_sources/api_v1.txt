@@ -1,0 +1,420 @@
+==================
+API V.1
+==================
+
+How to communicate with middleware.
+This documents explains how to deal with the RESTful API layer of Orchestrator, providing
+in the same way useful examples do modify and customize.
+In particular there are several sections to learn how to communicate and interact with 
+the Orchestrator, like status_, `start and stop vms`_, `assign and release vms`_
+
+
+HIERARCHY
+=========
+
+    .. image:: logo/components_classes.png
+       :height: 300px
+       :width: 600 px
+       :scale: 50 %
+       :alt: api class hierarchy
+       :align: right
+
+    Each url is bound to a routing class, the picture describes the class hierarchy and how are bound between them. "VMManageAPI" class is a little more than an abstract class, there are defined all default actions in a generic way to call a `not_implemented` method that raise a NotImplemented Exception. Deriving class from this class we have a safe docking, for each inherited class you have to override those methods that can reply to requests.
+
+
+STATUS
+======
+    These endpoints describe how to get cloud status information from the middleware, in
+    particular how to discover nodes_, images_ and flavors_.
+
+.. ########################################################################
+.. nodes information
+
+NODES
+-----
+
+
+DESCRIPTION
+    Retrieve nodes information 
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/nodes{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    
+VERSIONS
+    v1
+
+METHODS
+    * GET
+
+ERRORS
+    :200: Ok
+    :500: Cloud not valid
+
+EXAMPLES
+    * `GET nodes from the fake_driver with http`_
+    * `GET nodes from the fake_driver with curl`_
+    * `GET nodes from a wrong driver with http`_
+    * `GET nodes from a wrong driver with curl`_
+    
+
+
+Examples
+~~~~~~~~
+
+GET nodes from the fake_driver with http
+````````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/nodes/fake_driver 
+
+
+GET nodes from the fake_driver with curl
+````````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/nodes/fake_driver
+
+GET nodes from a wrong driver with http
+````````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/nodes/wrong_driver 
+        :shell:
+
+GET nodes from a wrong driver with curl
+````````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/nodes/wrong_driver
+
+
+.. ########################################################################
+.. nodes information
+
+IMAGES
+------
+
+
+DESCRIPTION
+    Retrieve images information 
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/images{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    
+VERSIONS
+    v1
+
+METHODS
+    * GET
+
+ERRORS
+    :200: Ok
+    :500: Cloud not valid
+
+EXAMPLES
+    * `GET images from the fake_driver with http`_
+    * `GET images from the fake_driver with curl`_
+    * `GET images from a wrong driver with http`_
+    * `GET images from a wrong driver with curl`_
+    
+    
+
+Examples
+~~~~~~~~
+
+GET images from the fake_driver with http
+`````````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/images/fake_driver 
+
+
+GET images from the fake_driver with curl
+`````````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/images/fake_driver
+
+GET images from a wrong driver with http
+````````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/images/wrong_driver 
+        :shell:
+
+GET images from a wrong driver with curl
+````````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/images/wrong_driver
+
+
+.. ########################################################################
+.. nodes information
+
+FLAVORS
+-------
+
+
+DESCRIPTION
+    Retrieve flavor information, this middleware use libcloud and it use "sizes" as a 
+    flavor synonym  as the openstack intends it, so in URLs it will be used "sizes" for
+    compliancy
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/sizes{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    
+VERSIONS
+    v1
+
+METHODS
+    * GET
+
+ERRORS
+    :200: Ok
+    :500: Cloud not valid
+
+EXAMPLES
+    * `GET sizes from the fake_driver with http`_
+    * `GET sizes from the fake_driver with curl`_
+    * `GET sizes from a wrong driver with http`_
+    * `GET sizes from a wrong driver with curl`_
+    
+    
+
+Examples
+~~~~~~~~
+
+GET sizes from the fake_driver with http
+````````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/sizes/fake_driver 
+
+
+GET sizes from the fake_driver with curl
+````````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/sizes/fake_driver
+
+GET sizes from a wrong driver with http
+```````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv GET http://localhost:5050/api/v1/sizes/wrong_driver 
+        :shell:
+
+GET sizes from a wrong driver with curl
+```````````````````````````````````````
+
+    .. command-output:: curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/sizes/wrong_driver
+        :shell:
+
+
+
+
+
+
+START AND STOP VMs
+==================
+    These endpoints describe how to create and destroy nodes using the middleware.
+
+
+START
+-----
+
+.. ########################################################################
+.. How to launch an instance
+    To create a node is mandatory to provide a node name, a image used as template and a size/flavor
+    to shape the node, In the *fake driver* this argument is meaningless.
+    Previous call are useful to get *image_id* and *size_id*
+
+
+DESCRIPTION
+
+        
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/vm/start{/<cloud>}
+
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    :param name: the name to give to the node ( not all clouds provider permits user to give names ),
+    :param image: the image id used as template
+    :param size: the size/flavor id used to forge the node's shape
+    :param keyname: optional field, used to pass the ssh keyname 
+    :param metadata: optional field, used to pass other uncategorized data
+    
+VERSIONS
+    v1
+
+METHODS
+    * POST
+
+ERRORS
+    :200: Ok
+    :500: Cloud not valid
+
+EXAMPLES
+    * `Start using the fake_driver with http`_
+    * `Start using the fake_driver with curl`_
+       
+    
+
+Examples
+~~~~~~~~
+
+Start using the fake_driver with http
+`````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv POST http://localhost:5050/api/v1/vm/start/fake_driver 'name=cloud_test' 'image=1' 'size=1'
+
+
+Start using the fake_driver with curl
+`````````````````````````````````````
+    .. command-output:: curl -s -X POST -H 'Content-Type: application/json' -d '{  "name": "cloud_test", "image": "1" , "size" : "1" }' http://localhost:5050/api/v1/vm/start/fake_driver
+
+
+STOP
+-----
+
+.. ########################################################################
+.. How to destroy an instance
+    To destroy a node is mandatory to provide the node name, the cloud parameter is optional ( it depends on the cloud used)
+
+DESCRIPTION
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/vm/stop{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    :param node: the node id to identify the node 
+    
+    
+VERSIONS
+    v1
+
+METHODS
+    * PUT
+
+ERRORS
+    :200: Ok
+    :500: Cloud not valid
+
+EXAMPLES
+    * `Stop using the fake_driver with http`_
+    * `Stop using the fake_driver with curl`_
+       
+    
+
+Examples
+~~~~~~~~
+
+Stop using the fake_driver with http
+`````````````````````````````````````
+
+    .. command-output:: http --pretty all -jv PUT http://localhost:5050/api/v1/vm/stop/fake_driver 'node=3'
+
+
+Stop using the fake_driver with curl
+`````````````````````````````````````
+    .. command-output:: curl -s -X PUT -H 'Content-Type: application/json' -d '{  "node": "4" }'    http://localhost:5050/api/v1/vm/stop/fake_driver
+
+
+
+
+ASSIGN AND RELEASE VMs
+======================
+    These endpoints describe how to assign and release nodes usign cistern through the middleware.
+
+ASSIGN
+------
+    Assign a VM to a particular user and application
+
+DESCRIPTION
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/vm/action/assign{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    :param node: the node id to identify the node
+    :param hostname: alternatively to node id is possible to specify the hostname
+    :param user: the user to assign
+    :param vm_type: the application name this VM should be attached with
+        
+VERSIONS
+    v1
+
+METHODS
+    * PUT
+
+ERRORS
+    :200: Ok
+    :400: Param not valid
+    :500: Cloud not valid
+
+Examples
+~~~~~~~~
+In this example an extra key is passed in data request, when the `emulate` parameter is passed and especially with a True value a particular routine is called and a custom default response is provided without calling Cistern facilities, this mechanism is used only with the purpose of auto-documentation.
+
+Using 'http' command
+````````````````````
+    .. command-output:: http --pretty all -jv PUT http://localhost:5050/api/v1/vm/action/assign/fake_driver 'node=fake_id' 'user=fake_user' 'vm_type=app_name' 'emulate=True'
+
+
+
+RELEASE
+-------
+Release a VM
+
+DESCRIPTION
+
+URL STRUCTURE
+    .. code-block:: guess
+
+        http://www.example.com/api/<version>/vm/action/release{/<cloud>}
+
+    :version: API version.
+    :cloud: cloud to use, if not specified it will be used "default" expressed in settings
+    :extension: json
+    :param node: the node id to identify the node
+    :param hostname: alternatively to node id is possible to specify the hostname
+
+VERSIONS
+    v1
+
+METHODS
+    * PUT
+
+ERRORS
+    :200: Ok
+    :400: Param not valid
+    :500: Cloud not valid
+
+Examples
+~~~~~~~~
+In this example an extra key is passed in data request, when the `emulate` parameter is passed and especially with a True value a particular routine is called and a custom default response is provided without calling Cistern facilities, this mechanism is used only with the purpose of auto-documentation.
+
+Using 'http' command
+````````````````````
+    .. command-output:: http --pretty all -jv PUT http://localhost:5050/api/v1/vm/action/release/fake_driver 'node=fake_id' 'emulate=True'
+

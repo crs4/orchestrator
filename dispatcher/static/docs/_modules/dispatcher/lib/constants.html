@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.lib.constants &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../../index.html" />
+    <link rel="up" title="dispatcher.lib" href="../lib.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.lib.constants</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.lib.constants</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details.</span>
+
+<span class="sd">    Various constants definition</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../dispatcher.lib.html#dispatcher.lib.constants.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class used in a confort</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">not_implemented</span> <span class="o">=</span> <span class="s">&#39;Not implemented&#39;</span>
+    <span class="n">cloud_not_valid</span> <span class="o">=</span> <span class="s">&#39;Cloud not valid&#39;</span>
+    <span class="n">cloud_or_invalid_path</span> <span class="o">=</span> <span class="s">&#39;Cloud not valid or wrong path&#39;</span>
+    <span class="n">action_not_valid</span> <span class="o">=</span> <span class="s">&#39;Unrecognized action found&#39;</span>
+
+
+    <span class="n">list_images</span> <span class="o">=</span> <span class="s">&#39;list_images&#39;</span>
+    <span class="n">list_sizes</span> <span class="o">=</span> <span class="s">&#39;list_sizes&#39;</span>
+    <span class="n">list_nodes</span> <span class="o">=</span> <span class="s">&#39;list_nodes&#39;</span>
+
+    <span class="n">destroy_node</span> <span class="o">=</span> <span class="s">&#39;destroy_node&#39;</span>
+    <span class="n">create_node</span> <span class="o">=</span> <span class="s">&#39;create_node&#39;</span>
+
+    <span class="n">OK</span> <span class="o">=</span> <span class="s">&#39;ok&#39;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s">&#39;error&#39;</span>
+    <span class="n">MAX_ITERATIONS</span> <span class="o">=</span> <span class="mi">3</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

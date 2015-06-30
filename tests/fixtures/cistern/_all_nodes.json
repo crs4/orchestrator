@@ -1,0 +1,38 @@
+{
+  "status": "ok",
+  "nodes": [
+    {
+      "status": 1,
+      "hostname": "37a33e1d-0eac-4910-af7b-610dc5ebdaa8",
+      "recipe": "test",
+      "status_desc": "FREE",
+      "recipe_id": 1,
+      "user": "",
+      "id_vm": "3f8f3cdd-a76e-4d91-9673-02ba68635561",
+      "id": 1,
+      "cloud": "default"
+    },
+    {
+      "status": 1,
+      "hostname": "6cc415bf-ca57-4d4c-8da8-1ebbb88bde8d",
+      "recipe": "test",
+      "status_desc": "FREE",
+      "recipe_id": 1,
+      "user": "",
+      "id_vm": "bc790651-f127-4acf-ae9b-e0ddda11481d",
+      "id": 2,
+      "cloud": "default"
+    },
+    {
+      "status": 1,
+      "hostname": "aaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeeeee",
+      "recipe": "test",
+      "status_desc": "FREE",
+      "recipe_id": 2,
+      "user": "",
+      "id_vm": "3",
+      "id": 3,
+      "cloud": "default"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Flask >= 0.9
+Flask-Script
+Flask-Security
+Flask-SQLAlchemy
+requests
+apache-libcloud
+schema
+jsonschema
+simplejson
+decorator

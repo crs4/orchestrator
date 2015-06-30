@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher Package &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="next" title="components Package" href="dispatcher.components.html" />
+    <link rel="prev" title="API V.1" href="api_v1.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher Package</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="api_v1.html">API V.1</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.components.html">components Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="dispatcher-package">
+<h1>dispatcher Package<a class="headerlink" href="#dispatcher-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">dispatcher</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dispatcher.__init__"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>Dispatcher initialization script.</p>
+<p>Dispatcher is the core of the Orchestrator, it provides a RESTful API web service with
+a JSON dialect.</p>
+<p>The initialization script is not supposed to be used directly or imported.</p>
+<p>In addiction to switch between development or production config file set proporly the variable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DEV</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c"># Debug on</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DEV</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Debug off</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="dispatcher.__init__.configure_app">
+<tt class="descclassname">dispatcher.__init__.</tt><tt class="descname">configure_app</tt><big>(</big><em>app</em><big>)</big><a class="reference internal" href="_modules/dispatcher/__init__.html#configure_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.__init__.configure_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>setup the flask application using setting directives.</p>
+<p>there are 3 ways to properly configure the flask app:</p>
+<ul class="simple">
+<li>changing <tt class="docutils literal"><span class="pre">settings.py</span></tt> content</li>
+<li>using the environmental variable <tt class="docutils literal"><span class="pre">MIDDLEWARE_SETTINGS</span></tt></li>
+<li>using a custom python file <tt class="docutils literal"><span class="pre">settings_local.cfg</span></tt></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.__init__.create_app">
+<tt class="descclassname">dispatcher.__init__.</tt><tt class="descname">create_app</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/__init__.html#create_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.__init__.create_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to create a configured flask application</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.__init__.setup_logging">
+<tt class="descclassname">dispatcher.__init__.</tt><tt class="descname">setup_logging</tt><big>(</big><em>app</em><big>)</big><a class="reference internal" href="_modules/dispatcher/__init__.html#setup_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.__init__.setup_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>setup logging facilities on setting directives</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.scripts">
+<span id="scripts-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">scripts</span></tt> Module<a class="headerlink" href="#module-dispatcher.scripts" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>Scripts file, used within flask-script routines to initialize the Orchestrator
+environment</p>
+<dl class="class">
+<dt id="dispatcher.scripts.PopulateDB">
+<em class="property">class </em><tt class="descclassname">dispatcher.scripts.</tt><tt class="descname">PopulateDB</tt><a class="reference internal" href="_modules/dispatcher/scripts.html#PopulateDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.scripts.PopulateDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_script.commands.Command</span></tt></p>
+<p>Fills in predefined data into DB</p>
+<dl class="method">
+<dt id="dispatcher.scripts.PopulateDB.run">
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/scripts.html#PopulateDB.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.scripts.PopulateDB.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run populate routine</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.scripts.ResetDB">
+<em class="property">class </em><tt class="descclassname">dispatcher.scripts.</tt><tt class="descname">ResetDB</tt><a class="reference internal" href="_modules/dispatcher/scripts.html#ResetDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.scripts.ResetDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_script.commands.Command</span></tt></p>
+<p>Drops all tables and recreates them</p>
+<dl class="method">
+<dt id="dispatcher.scripts.ResetDB.run">
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/scripts.html#ResetDB.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.scripts.ResetDB.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run reset routine</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.settings">
+<span id="settings-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">settings</span></tt> Module<a class="headerlink" href="#module-dispatcher.settings" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="description">
+<h3>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p>Settings file, used to configure the main Flask app.</p>
+<p>This configuration provides three classes:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#dispatcher.settings.Config" title="dispatcher.settings.Config"><tt class="xref py py-class docutils literal"><span class="pre">Config</span></tt></a> defines attributes for a global behaviour</li>
+<li><a class="reference internal" href="#dispatcher.settings.ProductionConfig" title="dispatcher.settings.ProductionConfig"><tt class="xref py py-class docutils literal"><span class="pre">ProductionConfig</span></tt></a> defines and set attributes to use only in a            stable environment ( like a loggin level not pushed to extreme )</li>
+<li><a class="reference internal" href="#dispatcher.settings.DevelopmentConfig" title="dispatcher.settings.DevelopmentConfig"><tt class="xref py py-class docutils literal"><span class="pre">DevelopmentConfig</span></tt></a> defines and set attrs only for a dev environment</li>
+</ul>
+<p>There is also another class, <a class="reference internal" href="#dispatcher.settings.CloudConfig" title="dispatcher.settings.CloudConfig"><tt class="xref py py-class docutils literal"><span class="pre">CloudConfig</span></tt></a> contains credentials and    url of the favorite cloud providers</p>
+<dl class="class">
+<dt id="dispatcher.settings.CloudConfig">
+<em class="property">class </em><tt class="descclassname">dispatcher.settings.</tt><tt class="descname">CloudConfig</tt><a class="reference internal" href="_modules/dispatcher/settings.html#CloudConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.settings.CloudConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="dispatcher.settings.CloudConfig.CLOUD_FARM">
+<tt class="descname">CLOUD_FARM</tt><em class="property"> = {'default': {'ENGINE': 'openstack', 'PASSWORD': 'secrete', 'USER': 'admin', 'EXTRA_PARAMS': {'ex_force_auth_version': '2.0_password', 'ex_tenant_name': 'demo', 'ex_force_auth_url': 'http://openstack.crs4.it:5000/v2.0'}}, 'eucalyptus': {'ENGINE': 'eucalyptus', 'PASSWORD': 'SlHFB5isHdqAAwMtTZT4fSB1KKeuAclcwIbgSZIv', 'USER': 'AKIMONBMNDMODZKP4SIX', 'EXTRA_PARAMS': {'path': '/services/Eucalyptus', 'host': 'eucalyptus.ecc.eucalyptus.com', 'secret': 'SlHFB5isHdqAAwMtTZT4fSB1KKeuAclcwIbgSZIv', 'secure': False, 'port': 8773}}, 'fake_driver': {'ENGINE': 'dummy'}}</em><a class="headerlink" href="#dispatcher.settings.CloudConfig.CLOUD_FARM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.settings.Config">
+<em class="property">class </em><tt class="descclassname">dispatcher.settings.</tt><tt class="descname">Config</tt><a class="reference internal" href="_modules/dispatcher/settings.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.settings.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Main configuration class, is intended to be used as a base class to
+inheritate</p>
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.CISTERN_API">
+<tt class="descname">CISTERN_API</tt><em class="property"> = 'v1'</em><a class="headerlink" href="#dispatcher.settings.Config.CISTERN_API" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.CISTERN_HOST">
+<tt class="descname">CISTERN_HOST</tt><em class="property"> = '127.0.0.1'</em><a class="headerlink" href="#dispatcher.settings.Config.CISTERN_HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.CISTERN_PORT">
+<tt class="descname">CISTERN_PORT</tt><em class="property"> = 5051</em><a class="headerlink" href="#dispatcher.settings.Config.CISTERN_PORT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.HOST">
+<tt class="descname">HOST</tt><em class="property"> = '0.0.0.0'</em><a class="headerlink" href="#dispatcher.settings.Config.HOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.LOG_FILE">
+<tt class="descname">LOG_FILE</tt><em class="property"> = '/tmp/middleware.log'</em><a class="headerlink" href="#dispatcher.settings.Config.LOG_FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.LOG_LEVEL">
+<tt class="descname">LOG_LEVEL</tt><em class="property"> = 10</em><a class="headerlink" href="#dispatcher.settings.Config.LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.PORT">
+<tt class="descname">PORT</tt><em class="property"> = 5050</em><a class="headerlink" href="#dispatcher.settings.Config.PORT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SECRET_KEY">
+<tt class="descname">SECRET_KEY</tt><em class="property"> = 'dev key pass foobar 1 2 3'</em><a class="headerlink" href="#dispatcher.settings.Config.SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SECURITY_REGISTERABLE">
+<tt class="descname">SECURITY_REGISTERABLE</tt><em class="property"> = False</em><a class="headerlink" href="#dispatcher.settings.Config.SECURITY_REGISTERABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SECURITY_TOKEN_AUTHENTICATION_HEADER">
+<tt class="descname">SECURITY_TOKEN_AUTHENTICATION_HEADER</tt><em class="property"> = 'X-Auth-Token'</em><a class="headerlink" href="#dispatcher.settings.Config.SECURITY_TOKEN_AUTHENTICATION_HEADER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SECURITY_TOKEN_AUTHENTICATION_KEY">
+<tt class="descname">SECURITY_TOKEN_AUTHENTICATION_KEY</tt><em class="property"> = 'auth_token'</em><a class="headerlink" href="#dispatcher.settings.Config.SECURITY_TOKEN_AUTHENTICATION_KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SECURITY_URL_PREFIX">
+<tt class="descname">SECURITY_URL_PREFIX</tt><em class="property"> = '/api/v1/auth'</em><a class="headerlink" href="#dispatcher.settings.Config.SECURITY_URL_PREFIX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.Config.SQLALCHEMY_DATABASE_URI">
+<tt class="descname">SQLALCHEMY_DATABASE_URI</tt><em class="property"> = 'sqlite:////tmp/auth.db'</em><a class="headerlink" href="#dispatcher.settings.Config.SQLALCHEMY_DATABASE_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.settings.DevelopmentConfig">
+<em class="property">class </em><tt class="descclassname">dispatcher.settings.</tt><tt class="descname">DevelopmentConfig</tt><a class="reference internal" href="_modules/dispatcher/settings.html#DevelopmentConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.settings.DevelopmentConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.settings.Config" title="dispatcher.settings.Config"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.settings.Config</span></tt></a></p>
+<p>Development settings</p>
+<dl class="attribute">
+<dt id="dispatcher.settings.DevelopmentConfig.DEBUG">
+<tt class="descname">DEBUG</tt><em class="property"> = True</em><a class="headerlink" href="#dispatcher.settings.DevelopmentConfig.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.DevelopmentConfig.LOG_FILE">
+<tt class="descname">LOG_FILE</tt><em class="property"> = '/tmp/middleware_dev.log'</em><a class="headerlink" href="#dispatcher.settings.DevelopmentConfig.LOG_FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.DevelopmentConfig.LOG_LEVEL">
+<tt class="descname">LOG_LEVEL</tt><em class="property"> = 10</em><a class="headerlink" href="#dispatcher.settings.DevelopmentConfig.LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.DevelopmentConfig.TESTING">
+<tt class="descname">TESTING</tt><em class="property"> = True</em><a class="headerlink" href="#dispatcher.settings.DevelopmentConfig.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.settings.ProductionConfig">
+<em class="property">class </em><tt class="descclassname">dispatcher.settings.</tt><tt class="descname">ProductionConfig</tt><a class="reference internal" href="_modules/dispatcher/settings.html#ProductionConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.settings.ProductionConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.settings.Config" title="dispatcher.settings.Config"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.settings.Config</span></tt></a></p>
+<p>Production settings</p>
+<dl class="attribute">
+<dt id="dispatcher.settings.ProductionConfig.DEBUG">
+<tt class="descname">DEBUG</tt><em class="property"> = False</em><a class="headerlink" href="#dispatcher.settings.ProductionConfig.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.ProductionConfig.LOG_LEVEL">
+<tt class="descname">LOG_LEVEL</tt><em class="property"> = 20</em><a class="headerlink" href="#dispatcher.settings.ProductionConfig.LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.settings.ProductionConfig.TESTING">
+<tt class="descname">TESTING</tt><em class="property"> = False</em><a class="headerlink" href="#dispatcher.settings.ProductionConfig.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-dispatcher.views">
+<span id="views-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">views</span></tt> Module<a class="headerlink" href="#module-dispatcher.views" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>View file, used to register blueprints/api versions</p>
+<dl class="function">
+<dt id="dispatcher.views.index">
+<tt class="descclassname">dispatcher.views.</tt><tt class="descname">index</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/views.html#index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.views.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.views.page_not_found">
+<tt class="descclassname">dispatcher.views.</tt><tt class="descname">page_not_found</tt><big>(</big><em>e</em><big>)</big><a class="reference internal" href="_modules/dispatcher/views.html#page_not_found"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.views.page_not_found" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.components.html">components Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.components.html#module-dispatcher.components.api"><tt class="docutils literal"><span class="pre">api</span></tt> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dispatcher.components.html#description">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.components.html#module-dispatcher.components.api_v1"><tt class="docutils literal"><span class="pre">api_v1</span></tt> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dispatcher.components.html#id1">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.components.html#module-dispatcher.components.api_v2"><tt class="docutils literal"><span class="pre">api_v2</span></tt> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dispatcher.components.html#id2">Description</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.lib.html">lib Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html#id1"><tt class="docutils literal"><span class="pre">lib</span></tt> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html#module-dispatcher.lib.cloud_init"><tt class="docutils literal"><span class="pre">cloud_init</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html#module-dispatcher.lib.constants"><tt class="docutils literal"><span class="pre">constants</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html#module-dispatcher.lib.helpers"><tt class="docutils literal"><span class="pre">helpers</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#id1"><tt class="docutils literal"><span class="pre">cloud_factory</span></tt> Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#module-dispatcher.lib.cloud_factory.cloud_farm"><tt class="docutils literal"><span class="pre">cloud_farm</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html">drivers Package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#id1"><tt class="docutils literal"><span class="pre">drivers</span></tt> Package</a></li>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.dummy"><tt class="docutils literal"><span class="pre">dummy</span></tt> Module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.ec2"><tt class="docutils literal"><span class="pre">ec2</span></tt> Module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.eucalyptus"><tt class="docutils literal"><span class="pre">eucalyptus</span></tt> Module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.openstack"><tt class="docutils literal"><span class="pre">openstack</span></tt> Module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.rackspace"><tt class="docutils literal"><span class="pre">rackspace</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.models.html">models Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.models.html#id1"><tt class="docutils literal"><span class="pre">models</span></tt> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.models.html#module-dispatcher.models.populate"><tt class="docutils literal"><span class="pre">populate</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="api_v1.html">API V.1</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.components.html">components Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

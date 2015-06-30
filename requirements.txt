@@ -1,0 +1,16 @@
+Flask == 0.10.1
+werkzeug == 0.9.1
+Flask-Login
+Flask-Script
+Flask-Security
+Flask-SQLAlchemy
+requests
+apache-libcloud==0.12.4
+schema
+jsonschema
+simplejson
+decorator
+sphinx
+sphinxcontrib-programoutput
+sphinxcontrib-ansi
+httpie

@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>drivers Package &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="up" title="cloud_factory Package" href="dispatcher.lib.cloud_factory.html" />
+    <link rel="next" title="models Package" href="dispatcher.models.html" />
+    <link rel="prev" title="cloud_factory Package" href="dispatcher.lib.cloud_factory.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>drivers Package</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.models.html">models Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="drivers-package">
+<h1>drivers Package<a class="headerlink" href="#drivers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">drivers</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dispatcher.lib.cloud_factory.drivers"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.GenericDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.</tt><tt class="descname">GenericDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers.html#GenericDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.GenericDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers.html#GenericDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method Prototype, should be overriden.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_factory.drivers.dummy">
+<span id="dummy-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">dummy</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_factory.drivers.dummy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.dummy.DummyDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.dummy.</tt><tt class="descname">DummyDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/dummy.html#DummyDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.dummy.DummyDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="dispatcher.lib.cloud_factory.drivers.GenericDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.GenericDriver</span></tt></a></p>
+<p>Dummy node driver</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.dummy.DummyDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/dummy.html#DummyDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.dummy.DummyDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_factory.drivers.ec2">
+<span id="ec2-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">ec2</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_factory.drivers.ec2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.ec2.</tt><tt class="descname">AmazonDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#AmazonDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="dispatcher.lib.cloud_factory.drivers.GenericDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.GenericDriver</span></tt></a></p>
+<p>Amazon Generic region base node driver</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#AmazonDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.EC2_EU_EAST_Driver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.ec2.</tt><tt class="descname">EC2_EU_EAST_Driver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#EC2_EU_EAST_Driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.EC2_EU_EAST_Driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver" title="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver</span></tt></a></p>
+<p>Amazon EU EAST region base node driver</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.EC2_EU_WEST_Driver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.ec2.</tt><tt class="descname">EC2_EU_WEST_Driver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#EC2_EU_WEST_Driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.EC2_EU_WEST_Driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver" title="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver</span></tt></a></p>
+<p>Amazon EU WEST region base node driver</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.EC2_US_EAST_Driver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.ec2.</tt><tt class="descname">EC2_US_EAST_Driver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#EC2_US_EAST_Driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.EC2_US_EAST_Driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver" title="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver</span></tt></a></p>
+<p>Amazon US EAST region base node driver</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.ec2.EC2_US_WEST_Driver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.ec2.</tt><tt class="descname">EC2_US_WEST_Driver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/ec2.html#EC2_US_WEST_Driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.ec2.EC2_US_WEST_Driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver" title="dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.ec2.AmazonDriver</span></tt></a></p>
+<p>Amazon US WEST region base node driver</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_factory.drivers.eucalyptus">
+<span id="eucalyptus-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">eucalyptus</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_factory.drivers.eucalyptus" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.eucalyptus.EucalyptusDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.eucalyptus.</tt><tt class="descname">EucalyptusDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/eucalyptus.html#EucalyptusDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.eucalyptus.EucalyptusDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="dispatcher.lib.cloud_factory.drivers.GenericDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.GenericDriver</span></tt></a></p>
+<p>Eucalyptus base node driver</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.eucalyptus.EucalyptusDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/eucalyptus.html#EucalyptusDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.eucalyptus.EucalyptusDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_factory.drivers.openstack">
+<span id="openstack-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">openstack</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_factory.drivers.openstack" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.openstack.OpenStackDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.openstack.</tt><tt class="descname">OpenStackDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/openstack.html#OpenStackDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.openstack.OpenStackDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="dispatcher.lib.cloud_factory.drivers.GenericDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.GenericDriver</span></tt></a></p>
+<p>OpenStack base node driver</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.openstack.OpenStackDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/openstack.html#OpenStackDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.openstack.OpenStackDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_factory.drivers.rackspace">
+<span id="rackspace-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">rackspace</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_factory.drivers.rackspace" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_factory.drivers.rackspace.RackspaceDriver">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_factory.drivers.rackspace.</tt><tt class="descname">RackspaceDriver</tt><big>(</big><em>creds</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/rackspace.html#RackspaceDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.rackspace.RackspaceDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.lib.cloud_factory.drivers.GenericDriver" title="dispatcher.lib.cloud_factory.drivers.GenericDriver"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.lib.cloud_factory.drivers.GenericDriver</span></tt></a></p>
+<p>Rackspace base node driver</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_factory.drivers.rackspace.RackspaceDriver.connect">
+<tt class="descname">connect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_factory/drivers/rackspace.html#RackspaceDriver.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_factory.drivers.rackspace.RackspaceDriver.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.models.html">models Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

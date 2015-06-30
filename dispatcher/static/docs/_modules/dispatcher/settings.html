@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.settings &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.settings</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.settings</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details.</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    ~~~~~~~~~~~</span>
+
+<span class="sd">    Settings file, used to configure the main Flask app.</span>
+
+<span class="sd">    This configuration provides three classes:</span>
+
+<span class="sd">    + :class:`Config` defines attributes for a global behaviour</span>
+<span class="sd">    + :class:`ProductionConfig` defines and set attributes to use only in a\</span>
+<span class="sd">            stable environment ( like a loggin level not pushed to extreme )</span>
+<span class="sd">    + :class:`DevelopmentConfig` defines and set attrs only for a dev environment</span>
+
+<span class="sd">    There is also another class, :class:`CloudConfig` contains credentials and\</span>
+<span class="sd">    url of the favorite cloud providers</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dispatcher.lib</span> <span class="kn">import</span> <span class="n">Provider</span>
+
+<span class="n">LOGGIN_LEVEL</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;DEBUG&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                <span class="s">&#39;WARN&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+                <span class="s">&#39;INFO&#39;</span><span class="p">:</span> <span class="mi">20</span>
+                <span class="p">}</span>
+
+
+<div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.settings.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main configuration class, is intended to be used as a base class to</span>
+<span class="sd">    inheritate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># WHERE THE WEB SERVICE SHOULD LISTEN</span>
+    <span class="n">HOST</span> <span class="o">=</span> <span class="s">&#39;0.0.0.0&#39;</span>
+    <span class="n">PORT</span> <span class="o">=</span> <span class="mi">5050</span>
+
+    <span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s">&#39;dev key pass foobar 1 2 3&#39;</span>
+
+    <span class="c">#  ### DB CONNECTION</span>
+    <span class="n">SQLALCHEMY_DATABASE_URI</span> <span class="o">=</span> <span class="s">&#39;sqlite:////tmp/auth.db&#39;</span>
+
+    <span class="n">LOG_FILE</span> <span class="o">=</span> <span class="s">&quot;/tmp/middleware.log&quot;</span>
+    <span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="n">LOGGIN_LEVEL</span><span class="p">[</span><span class="s">&#39;DEBUG&#39;</span><span class="p">]</span>
+
+    <span class="c"># security</span>
+    <span class="n">SECURITY_REGISTERABLE</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">SECURITY_URL_PREFIX</span> <span class="o">=</span> <span class="s">&quot;/api/v1/auth&quot;</span>
+    <span class="n">SECURITY_TOKEN_AUTHENTICATION_HEADER</span> <span class="o">=</span> <span class="s">&quot;X-Auth-Token&quot;</span>
+                                         <span class="c">#Defaults: Authentication-Token</span>
+    <span class="n">SECURITY_TOKEN_AUTHENTICATION_KEY</span> <span class="o">=</span> <span class="s">&#39;auth_token&#39;</span>
+    <span class="c"># SECURITY_TRACKABLE = True</span>
+
+    <span class="c">#  ### CISTERN CONNECTION SETTINGS</span>
+    <span class="n">CISTERN_HOST</span> <span class="o">=</span> <span class="s">&#39;127.0.0.1&#39;</span>
+    <span class="n">CISTERN_PORT</span> <span class="o">=</span> <span class="mi">5051</span>
+    <span class="n">CISTERN_API</span> <span class="o">=</span> <span class="s">&#39;v1&#39;</span>
+
+</div>
+<div class="viewcode-block" id="ProductionConfig"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.settings.ProductionConfig">[docs]</a><span class="k">class</span> <span class="nc">ProductionConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Production settings &quot;&quot;&quot;</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">TESTING</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="n">LOGGIN_LEVEL</span><span class="p">[</span><span class="s">&#39;INFO&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="DevelopmentConfig"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.settings.DevelopmentConfig">[docs]</a><span class="k">class</span> <span class="nc">DevelopmentConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Development settings &quot;&quot;&quot;</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">TESTING</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">LOG_FILE</span> <span class="o">=</span> <span class="s">&quot;/tmp/middleware_dev.log&quot;</span>
+    <span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="n">LOGGIN_LEVEL</span><span class="p">[</span><span class="s">&#39;DEBUG&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="CloudConfig"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.settings.CloudConfig">[docs]</a><span class="k">class</span> <span class="nc">CloudConfig</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">CLOUD_FARM</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;default&#39;</span><span class="p">:</span>
+
+                   <span class="p">{</span><span class="s">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="n">Provider</span><span class="o">.</span><span class="n">OPENSTACK</span><span class="p">,</span>
+                    <span class="s">&#39;USER&#39;</span><span class="p">:</span> <span class="s">&#39;admin&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;PASSWORD&#39;</span><span class="p">:</span> <span class="s">&#39;secrete&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;EXTRA_PARAMS&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;ex_force_auth_url&#39;</span><span class="p">:</span>
+                                         <span class="s">&#39;http://openstack.crs4.it:5000/v2.0&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;ex_force_auth_version&#39;</span><span class="p">:</span> <span class="s">&#39;2.0_password&#39;</span><span class="p">,</span>
+                                     <span class="s">&#39;ex_tenant_name&#39;</span><span class="p">:</span> <span class="s">&#39;demo&#39;</span><span class="p">,</span>
+                                     <span class="c"># if used in a multi region is mandatory a line with</span>
+                                     <span class="c"># an explainatory region.</span>
+                                     <span class="c"># ex_force_service_region&#39; : &#39;regionOne&#39;</span>
+                                     <span class="p">}</span>
+                    <span class="p">},</span>
+
+                   <span class="s">&#39;fake_driver&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="n">Provider</span><span class="o">.</span><span class="n">DUMMY</span>
+                                   <span class="c"># this driver emulates a cloud</span>
+                                   <span class="p">},</span>
+
+                    <span class="s">&#39;eucalyptus&#39;</span><span class="p">:</span> <span class="p">{</span> <span class="s">&#39;ENGINE&#39;</span> <span class="p">:</span> <span class="n">Provider</span><span class="o">.</span><span class="n">EUCALYPTUS</span><span class="p">,</span>
+                                    <span class="s">&#39;USER&#39;</span> <span class="p">:</span> <span class="s">&#39;AKIMONBMNDMODZKP4SIX&#39;</span><span class="p">,</span>
+                                        <span class="c"># EC2_ACCESS_KEY</span>
+                                    <span class="s">&#39;PASSWORD&#39;</span> <span class="p">:</span> <span class="s">&#39;SlHFB5isHdqAAwMtTZT4fSB1KKeuAclcwIbgSZIv&#39;</span><span class="p">,</span>
+                                    <span class="s">&#39;EXTRA_PARAMS&#39;</span><span class="p">:</span> <span class="p">{</span>
+                                            <span class="s">&#39;host&#39;</span><span class="p">:</span> <span class="s">&quot;eucalyptus.ecc.eucalyptus.com&quot;</span><span class="p">,</span> 
+                                            <span class="s">&#39;secure&#39;</span> <span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                                            <span class="s">&#39;port&#39;</span> <span class="p">:</span> <span class="mi">8773</span><span class="p">,</span>
+                                            <span class="s">&#39;path&#39;</span> <span class="p">:</span> <span class="s">&quot;/services/Eucalyptus&quot;</span>
+                                                    <span class="p">}</span>
+                                <span class="p">}</span>
+
+                  <span class="p">}</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
