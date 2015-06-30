@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>components Package &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="up" title="dispatcher Package" href="dispatcher.html" />
+    <link rel="next" title="lib Package" href="dispatcher.lib.html" />
+    <link rel="prev" title="dispatcher Package" href="dispatcher.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>components Package</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.html">dispatcher Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.lib.html">lib Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="components-package">
+<h1>components Package<a class="headerlink" href="#components-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-dispatcher.components.api">
+<span id="api-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">api</span></tt> Module<a class="headerlink" href="#module-dispatcher.components.api" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="description">
+<h3>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p>Base file where parent routines are defined and from where
+these will be inherited.</p>
+<dl class="class">
+<dt id="dispatcher.components.api.VMManageAPI">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api.</tt><tt class="descname">VMManageAPI</tt><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask.views.MethodView</span></tt></p>
+<p>Abstract response class, used to have global implementation for
+unused methods.</p>
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.delete">
+<tt class="descname">delete</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.get">
+<tt class="descname">get</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api.VMManageAPI.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.options">
+<tt class="descname">options</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.patch">
+<tt class="descname">patch</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.patch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.post">
+<tt class="descname">post</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api.VMManageAPI.put">
+<tt class="descname">put</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api.html#VMManageAPI.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api.VMManageAPI.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-dispatcher.components.api_v1">
+<span id="api-v1-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">api_v1</span></tt> Module<a class="headerlink" href="#module-dispatcher.components.api_v1" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h3>Description<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>API level v1 blueprint</p>
+<p>This blueprint provides V.1 API dialect to specific functions:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#dispatcher.components.api_v1.RunAndStopVM" title="dispatcher.components.api_v1.RunAndStopVM"><tt class="xref py py-class docutils literal"><span class="pre">RunAndStopVM</span></tt></a> provides start and stop VMs facilities</li>
+<li><a class="reference internal" href="#dispatcher.components.api_v1.AssignReleaseVM" title="dispatcher.components.api_v1.AssignReleaseVM"><tt class="xref py py-class docutils literal"><span class="pre">AssignReleaseVM</span></tt></a> provides facilities to reserve and release VMs for users and applications</li>
+<li><a class="reference internal" href="#dispatcher.components.api_v1.SystemStatus" title="dispatcher.components.api_v1.SystemStatus"><tt class="xref py py-class docutils literal"><span class="pre">SystemStatus</span></tt></a> to have always the system under control</li>
+</ul>
+<p>In <cite>api_call_examples</cite> file there are several examples about how to use and
+deal with the middleware.</p>
+<dl class="class">
+<dt id="dispatcher.components.api_v1.AssignReleaseVM">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">AssignReleaseVM</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AssignReleaseVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AssignReleaseVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Assign / Release VM to user</p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.AssignReleaseVM.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.AssignReleaseVM.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.AssignReleaseVM.put">
+<tt class="descname">put</tt><big>(</big><em>action</em>, <em>cloud='default'</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AssignReleaseVM.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AssignReleaseVM.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign or Release resources</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.AssignmentStatusVM">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">AssignmentStatusVM</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AssignmentStatusVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AssignmentStatusVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Assignment status for remote clouds</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.AssignmentStatusVM.get">
+<tt class="descname">get</tt><big>(</big><em>cloud='default'</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AssignmentStatusVM.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AssignmentStatusVM.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Support remote resources</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.AssignmentStatusVM.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.AssignmentStatusVM.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.AuthAPI">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">AuthAPI</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AuthAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AuthAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Authentication endpoint class, used to get auth token</p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.AuthAPI.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.AuthAPI.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.AuthAPI.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#AuthAPI.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.AuthAPI.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.CisternConnection">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">CisternConnection</tt><big>(</big><em>cloud</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CisternConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CisternConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Service Class to route queries over CISTERN API</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.CisternConnection.get_all_active_nodes">
+<tt class="descname">get_all_active_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CisternConnection.get_all_active_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CisternConnection.get_all_active_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all nodes an then filter by activity.
+No extra params needed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.CisternConnection.get_all_nodes">
+<tt class="descname">get_all_nodes</tt><big>(</big><em>with_faulty_nodes=True</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CisternConnection.get_all_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CisternConnection.get_all_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all nodes from cistern</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.CisternConnection.get_node_by_field">
+<tt class="descname">get_node_by_field</tt><big>(</big><em>field</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CisternConnection.get_node_by_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CisternConnection.get_node_by_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all nodes an then filter by a field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.CisternConnection.get_page">
+<tt class="descname">get_page</tt><big>(</big><em>url</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CisternConnection.get_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CisternConnection.get_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a request to cistern.</p>
+<ul>
+<li><p class="first"><tt class="xref py py-attr docutils literal"><span class="pre">url</span></tt> is the url to contact, protocol and servername                is added on the fly with what has been specified on                initialization of the object</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">kwargs</span></tt> is an attribute of optional key/value pairs, should be:</dt>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">method</span></tt>, the way to contact the server, default is &#8216;get&#8217;,</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">payload</span></tt>, is a dictionary structure containing additional            payload useful to the request</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.CloudConnection">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">CloudConnection</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Service Class, used to serve queries on demand routed over clouds.</p>
+<p>This Class is designed to provide an uniformed layer to get</p>
+<ul class="simple">
+<li><a class="reference internal" href="#dispatcher.components.api_v1.CloudConnection.get_node" title="dispatcher.components.api_v1.CloudConnection.get_node"><tt class="xref py py-meth docutils literal"><span class="pre">get_node()</span></tt></a></li>
+<li><tt class="xref py py-meth docutils literal"><span class="pre">get_images()</span></tt></li>
+<li><a class="reference internal" href="#dispatcher.components.api_v1.CloudConnection.get_size" title="dispatcher.components.api_v1.CloudConnection.get_size"><tt class="xref py py-meth docutils literal"><span class="pre">get_size()</span></tt></a></li>
+</ul>
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.fetch_object_by_field">
+<em class="property">static </em><tt class="descname">fetch_object_by_field</tt><big>(</big><em>cloud</em>, <em>method</em>, <em>id_obj</em>, <em>field</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.fetch_object_by_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.fetch_object_by_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>General fetching routine filtered by field</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.fetch_object_by_id">
+<em class="property">static </em><tt class="descname">fetch_object_by_id</tt><big>(</big><em>cloud</em>, <em>method</em>, <em>id_obj</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.fetch_object_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.fetch_object_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>General fetch routine by some ids</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.get_image">
+<em class="property">static </em><tt class="descname">get_image</tt><big>(</big><em>cloud</em>, <em>id_obj</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.get_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.get_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a particular image by id from your favorite cloud</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.get_node">
+<em class="property">static </em><tt class="descname">get_node</tt><big>(</big><em>cloud</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.get_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.get_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a particular node by id from your favorite cloud</p>
+<p><tt class="xref py py-attr docutils literal"><span class="pre">kwargs</span></tt> should contain <cite>data</cite>, a dictionary structured as</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;node&quot;</span> <span class="o">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="s">&quot;hostname&quot;</span> <span class="o">:</span> <span class="s">&quot;this is an hostname&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>node and hostname are complementary, is strictly necessary only one of
+these.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.get_size">
+<em class="property">static </em><tt class="descname">get_size</tt><big>(</big><em>cloud</em>, <em>id_obj</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.get_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.get_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a particular flavor by id from your favorite cloud</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.components.api_v1.CloudConnection.make_query">
+<em class="property">static </em><tt class="descname">make_query</tt><big>(</big><em>cloud</em>, <em>method</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudConnection.make_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudConnection.make_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstraction to make cloud queries only here.
+method is something like &#8216;list_nodes&#8217;.</p>
+<p>This could be a good place to implement a different routine to choose
+which cloud to work with.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.CloudServed">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">CloudServed</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudServed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudServed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Provides a list of the served cloud pool</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.CloudServed.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#CloudServed.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.CloudServed.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to have a list of served clouds</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.CloudServed.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.CloudServed.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.FooClass">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">FooClass</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#FooClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.FooClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>test foo class</p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.FooClass.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.FooClass.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.FooClass.put">
+<tt class="descname">put</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#FooClass.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.FooClass.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.HomeAPI">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">HomeAPI</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#HomeAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.HomeAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Generic root endpoint class</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.HomeAPI.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#HomeAPI.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.HomeAPI.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.HomeAPI.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.HomeAPI.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.HomeAPI.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#HomeAPI.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.HomeAPI.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.ManageFirewall">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">ManageFirewall</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#ManageFirewall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.ManageFirewall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Firewall management class, used to open and close ports</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.ManageFirewall.get">
+<tt class="descname">get</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#ManageFirewall.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.ManageFirewall.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.ManageFirewall.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.ManageFirewall.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.ManageFirewall.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#ManageFirewall.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.ManageFirewall.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.ManageFirewall.put">
+<tt class="descname">put</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#ManageFirewall.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.ManageFirewall.put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.ManageStorage">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">ManageStorage</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#ManageStorage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.ManageStorage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>ToDo class</p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.ManageStorage.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.ManageStorage.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.RunAndStopVM">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">RunAndStopVM</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#RunAndStopVM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.RunAndStopVM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Provides start and stop routines to launch VMs in the cloud</p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.RunAndStopVM.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.RunAndStopVM.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.RunAndStopVM.post">
+<tt class="descname">post</tt><big>(</big><em>cloud='default'</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#RunAndStopVM.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.RunAndStopVM.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to launch a new VM</p>
+<p><cite>request.data</cite> is the payload in JSON and should contain :</p>
+<ul class="simple">
+<li><cite>image</cite> : the image identifier, a string like                    &#8220;3c725bdb-b575-4e0f-b21b-67b0d089867d&#8221;</li>
+<li><cite>size</cite> : the size/flavor identifier, same thing as images</li>
+<li><cite>metadata</cite> : custom Key/Value metadata dictionary t0o associate                        with a node</li>
+<li><cite>keyname</cite> : A string containing the name of existing public key to                     inject into instance</li>
+</ul>
+<p>Depending cloud provider needs this class could be enhanced and        extended, each cloud takes his own attributes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.components.api_v1.RunAndStopVM.put">
+<tt class="descname">put</tt><big>(</big><em>cloud='default'</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#RunAndStopVM.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.RunAndStopVM.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to stop a VM, this is the shutdown process</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.SystemStatus">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">SystemStatus</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#SystemStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.SystemStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>Status management class, used to get the status of VMs</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.SystemStatus.get">
+<tt class="descname">get</tt><big>(</big><em>action</em>, <em>cloud='default'</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#SystemStatus.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.SystemStatus.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory GET routine, it accepts:</p>
+<p>action: {flavors,images,nodes}</p>
+<p>cloud: the source where we get data from, if not specified &#8220;default&#8221;
+is choosen</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.SystemStatus.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.SystemStatus.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.components.api_v1.VMSystemMonitor">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v1.</tt><tt class="descname">VMSystemMonitor</tt><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#VMSystemMonitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.VMSystemMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<p>List instances or get a single instance status</p>
+<dl class="method">
+<dt id="dispatcher.components.api_v1.VMSystemMonitor.get">
+<tt class="descname">get</tt><big>(</big><em>action</em><big>)</big><a class="reference internal" href="_modules/dispatcher/components/api_v1.html#VMSystemMonitor.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v1.VMSystemMonitor.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.components.api_v1.VMSystemMonitor.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v1.VMSystemMonitor.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-dispatcher.components.api_v2">
+<span id="api-v2-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">api_v2</span></tt> Module<a class="headerlink" href="#module-dispatcher.components.api_v2" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id2">
+<h3>Description<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>API level v2 blueprint</p>
+<p>This module is a mere template for future developments.</p>
+<dl class="class">
+<dt id="dispatcher.components.api_v2.VMManageAPIV2">
+<em class="property">class </em><tt class="descclassname">dispatcher.components.api_v2.</tt><tt class="descname">VMManageAPIV2</tt><a class="reference internal" href="_modules/dispatcher/components/api_v2.html#VMManageAPIV2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.components.api_v2.VMManageAPIV2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dispatcher.components.api.VMManageAPI" title="dispatcher.components.api.VMManageAPI"><tt class="xref py py-class docutils literal"><span class="pre">dispatcher.components.api.VMManageAPI</span></tt></a></p>
+<dl class="attribute">
+<dt id="dispatcher.components.api_v2.VMManageAPIV2.methods">
+<tt class="descname">methods</tt><em class="property"> = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']</em><a class="headerlink" href="#dispatcher.components.api_v2.VMManageAPIV2.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.html">dispatcher Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.lib.html">lib Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

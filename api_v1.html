@@ -1,0 +1,1126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API V.1 &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="next" title="dispatcher Package" href="dispatcher.html" />
+    <link rel="prev" title="Resources" href="index.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>API V.1</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Resources</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.html">dispatcher Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="api-v-1">
+<h1>API V.1<a class="headerlink" href="#api-v-1" title="Permalink to this headline">¶</a></h1>
+<p>How to communicate with middleware.
+This documents explains how to deal with the RESTful API layer of Orchestrator, providing
+in the same way useful examples do modify and customize.
+In particular there are several sections to learn how to communicate and interact with
+the Orchestrator, like <a class="reference internal" href="#status">status</a>, <a class="reference internal" href="#start-and-stop-vms">start and stop vms</a>, <a class="reference internal" href="#assign-and-release-vms">assign and release vms</a></p>
+<div class="section" id="hierarchy">
+<h2>HIERARCHY<a class="headerlink" href="#hierarchy" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><a class="reference internal image-reference" href="_images/components_classes.png"><img alt="api class hierarchy" class="align-right" src="_images/components_classes.png" style="width: 300.0px; height: 150.0px;" /></a>
+<p>Each url is bound to a routing class, the picture describes the class hierarchy and how are bound between them. &#8220;VMManageAPI&#8221; class is a little more than an abstract class, there are defined all default actions in a generic way to call a <cite>not_implemented</cite> method that raise a NotImplemented Exception. Deriving class from this class we have a safe docking, for each inherited class you have to override those methods that can reply to requests.</p>
+</div></blockquote>
+</div>
+<div class="section" id="status">
+<h2>STATUS<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>These endpoints describe how to get cloud status information from the middleware, in
+particular how to discover <a class="reference internal" href="#nodes">nodes</a>, <a class="reference internal" href="#images">images</a> and <a class="reference internal" href="#flavors">flavors</a>.</div></blockquote>
+<div class="section" id="nodes">
+<h3>NODES<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>DESCRIPTION</dt>
+<dd>Retrieve nodes information</dd>
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/nodes{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#get-nodes-from-the-fake-driver-with-http">GET nodes from the fake_driver with http</a></li>
+<li><a class="reference internal" href="#get-nodes-from-the-fake-driver-with-curl">GET nodes from the fake_driver with curl</a></li>
+<li><a class="reference internal" href="#get-nodes-from-a-wrong-driver-with-http">GET nodes from a wrong driver with http</a></li>
+<li><a class="reference internal" href="#get-nodes-from-a-wrong-driver-with-curl">GET nodes from a wrong driver with curl</a></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="get-nodes-from-the-fake-driver-with-http">
+<h5>GET nodes from the fake_driver with http<a class="headerlink" href="#get-nodes-from-the-fake-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/nodes/fake_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/nodes/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">683</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:00 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQA.DfFClm88iu5K4Pk9axMktu-J9Cg; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;nodes&quot;</span>: [
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;extra&quot;</span>: {
+                <span class="ansi-blue ansi-bold">&quot;foo&quot;</span>: <span class="ansi-yellow">&quot;bar&quot;</span>
+            }, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;1&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;dummy-1&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;private_ips&quot;</span>: [], 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;public_ips&quot;</span>: [
+                <span class="ansi-yellow">&quot;127.0.0.1&quot;</span>
+            ], 
+            <span class="ansi-blue ansi-bold">&quot;state&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;uuid&quot;</span>: <span class="ansi-yellow">&quot;2c183c20f71eb5732512d6cfe1f75ebc9d9bb4dd&quot;</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;extra&quot;</span>: {
+                <span class="ansi-blue ansi-bold">&quot;foo&quot;</span>: <span class="ansi-yellow">&quot;bar&quot;</span>
+            }, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;2&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;dummy-2&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;private_ips&quot;</span>: [], 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;public_ips&quot;</span>: [
+                <span class="ansi-yellow">&quot;127.0.0.1&quot;</span>
+            ], 
+            <span class="ansi-blue ansi-bold">&quot;state&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;uuid&quot;</span>: <span class="ansi-yellow">&quot;46ff62f5eafc7837de6ec1450b8e0e608db06d7a&quot;</span>
+        }
+    ], 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-nodes-from-the-fake-driver-with-curl">
+<h5>GET nodes from the fake_driver with curl<a class="headerlink" href="#get-nodes-from-the-fake-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/nodes/fake_driver
+{
+  &quot;nodes&quot;: [
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;extra&quot;: {
+        &quot;foo&quot;: &quot;bar&quot;
+      },
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;name&quot;: &quot;dummy-1&quot;,
+      &quot;private_ips&quot;: [],
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;public_ips&quot;: [
+        &quot;127.0.0.1&quot;
+      ],
+      &quot;state&quot;: 0,
+      &quot;uuid&quot;: &quot;2c183c20f71eb5732512d6cfe1f75ebc9d9bb4dd&quot;
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;extra&quot;: {
+        &quot;foo&quot;: &quot;bar&quot;
+      },
+      &quot;id&quot;: &quot;2&quot;,
+      &quot;name&quot;: &quot;dummy-2&quot;,
+      &quot;private_ips&quot;: [],
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;public_ips&quot;: [
+        &quot;127.0.0.1&quot;
+      ],
+      &quot;state&quot;: 0,
+      &quot;uuid&quot;: &quot;46ff62f5eafc7837de6ec1450b8e0e608db06d7a&quot;
+    }
+  ],
+  &quot;status&quot;: &quot;ok&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-nodes-from-a-wrong-driver-with-http">
+<h5>GET nodes from a wrong driver with http<a class="headerlink" href="#get-nodes-from-a-wrong-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/nodes/wrong_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/nodes/wrong_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">500</span> <span class="ansi-cyan">INTERNAL SERVER ERROR</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">199</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:01 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQQ.l6z5Vpbs-bpVv4ncjcuqLg891Mc; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;message&quot;</span>: <span class="ansi-yellow">&quot;Cloud not valid or wrong path&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;error&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_code&quot;</span>: <span class="ansi-blue">500</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_long_message&quot;</span>: <span class="ansi-yellow">&quot;Server got itself in trouble&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_short_message&quot;</span>: <span class="ansi-yellow">&quot;Internal Server Error&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-nodes-from-a-wrong-driver-with-curl">
+<h5>GET nodes from a wrong driver with curl<a class="headerlink" href="#get-nodes-from-a-wrong-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/nodes/wrong_driver
+{
+  &quot;message&quot;: &quot;Cloud not valid or wrong path&quot;,
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;status_code&quot;: 500,
+  &quot;status_long_message&quot;: &quot;Server got itself in trouble&quot;,
+  &quot;status_short_message&quot;: &quot;Internal Server Error&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="images">
+<h3>IMAGES<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>DESCRIPTION</dt>
+<dd>Retrieve images information</dd>
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/images{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#get-images-from-the-fake-driver-with-http">GET images from the fake_driver with http</a></li>
+<li><a class="reference internal" href="#get-images-from-the-fake-driver-with-curl">GET images from the fake_driver with curl</a></li>
+<li><a class="reference internal" href="#get-images-from-a-wrong-driver-with-http">GET images from a wrong driver with http</a></li>
+<li><a class="reference internal" href="#get-images-from-a-wrong-driver-with-curl">GET images from a wrong driver with curl</a></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="id1">
+<h4>Examples<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="get-images-from-the-fake-driver-with-http">
+<h5>GET images from the fake_driver with http<a class="headerlink" href="#get-images-from-the-fake-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/images/fake_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/images/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">422</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:02 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQg.rAlpyA8XOznYsOwj7SmkgjijWjo; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;images&quot;</span>: [
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;1&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Ubuntu 9.10&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;2&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Ubuntu 9.04&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;3&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Slackware 4&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>
+        }
+    ], 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-images-from-the-fake-driver-with-curl">
+<h5>GET images from the fake_driver with curl<a class="headerlink" href="#get-images-from-the-fake-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/images/fake_driver
+{
+  &quot;images&quot;: [
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;name&quot;: &quot;Ubuntu 9.10&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;id&quot;: &quot;2&quot;,
+      &quot;name&quot;: &quot;Ubuntu 9.04&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;id&quot;: &quot;3&quot;,
+      &quot;name&quot;: &quot;Slackware 4&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;
+    }
+  ],
+  &quot;status&quot;: &quot;ok&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-images-from-a-wrong-driver-with-http">
+<h5>GET images from a wrong driver with http<a class="headerlink" href="#get-images-from-a-wrong-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/images/wrong_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/images/wrong_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">500</span> <span class="ansi-cyan">INTERNAL SERVER ERROR</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">199</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:02 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQg.rAlpyA8XOznYsOwj7SmkgjijWjo; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;message&quot;</span>: <span class="ansi-yellow">&quot;Cloud not valid or wrong path&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;error&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_code&quot;</span>: <span class="ansi-blue">500</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_long_message&quot;</span>: <span class="ansi-yellow">&quot;Server got itself in trouble&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_short_message&quot;</span>: <span class="ansi-yellow">&quot;Internal Server Error&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-images-from-a-wrong-driver-with-curl">
+<h5>GET images from a wrong driver with curl<a class="headerlink" href="#get-images-from-a-wrong-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/images/wrong_driver
+{
+  &quot;message&quot;: &quot;Cloud not valid or wrong path&quot;,
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;status_code&quot;: 500,
+  &quot;status_long_message&quot;: &quot;Server got itself in trouble&quot;,
+  &quot;status_short_message&quot;: &quot;Internal Server Error&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="flavors">
+<h3>FLAVORS<a class="headerlink" href="#flavors" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>DESCRIPTION</dt>
+<dd>Retrieve flavor information, this middleware use libcloud and it use &#8220;sizes&#8221; as a
+flavor synonym  as the openstack intends it, so in URLs it will be used &#8220;sizes&#8221; for
+compliancy</dd>
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/sizes{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>GET</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#get-sizes-from-the-fake-driver-with-http">GET sizes from the fake_driver with http</a></li>
+<li><a class="reference internal" href="#get-sizes-from-the-fake-driver-with-curl">GET sizes from the fake_driver with curl</a></li>
+<li><a class="reference internal" href="#get-sizes-from-a-wrong-driver-with-http">GET sizes from a wrong driver with http</a></li>
+<li><a class="reference internal" href="#get-sizes-from-a-wrong-driver-with-curl">GET sizes from a wrong driver with curl</a></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="id2">
+<h4>Examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="get-sizes-from-the-fake-driver-with-http">
+<h5>GET sizes from the fake_driver with http<a class="headerlink" href="#get-sizes-from-the-fake-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/sizes/fake_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/sizes/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">738</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:02 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQg.rAlpyA8XOznYsOwj7SmkgjijWjo; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;flavors&quot;</span>: [
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;cpu&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;disk&quot;</span>: <span class="ansi-blue">4</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;1&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Small&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;ram&quot;</span>: <span class="ansi-blue">128</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;cpu&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;disk&quot;</span>: <span class="ansi-blue">16</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;2&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Medium&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;ram&quot;</span>: <span class="ansi-blue">512</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;cpu&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;disk&quot;</span>: <span class="ansi-blue">32</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;3&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;Big&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;ram&quot;</span>: <span class="ansi-blue">4096</span>
+        }, 
+        {
+            <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;cpu&quot;</span>: <span class="ansi-blue">0</span>, 
+            <span class="ansi-blue ansi-bold">&quot;disk&quot;</span>: <span class="ansi-blue">128</span>, 
+            <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;4&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;XXL Big&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+            <span class="ansi-blue ansi-bold">&quot;ram&quot;</span>: <span class="ansi-blue">8192</span>
+        }
+    ], 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-sizes-from-the-fake-driver-with-curl">
+<h5>GET sizes from the fake_driver with curl<a class="headerlink" href="#get-sizes-from-the-fake-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/sizes/fake_driver
+{
+  &quot;flavors&quot;: [
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;cpu&quot;: 0,
+      &quot;disk&quot;: 4,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;name&quot;: &quot;Small&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;ram&quot;: 128
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;cpu&quot;: 0,
+      &quot;disk&quot;: 16,
+      &quot;id&quot;: &quot;2&quot;,
+      &quot;name&quot;: &quot;Medium&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;ram&quot;: 512
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;cpu&quot;: 0,
+      &quot;disk&quot;: 32,
+      &quot;id&quot;: &quot;3&quot;,
+      &quot;name&quot;: &quot;Big&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;ram&quot;: 4096
+    },
+    {
+      &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+      &quot;cpu&quot;: 0,
+      &quot;disk&quot;: 128,
+      &quot;id&quot;: &quot;4&quot;,
+      &quot;name&quot;: &quot;XXL Big&quot;,
+      &quot;provider&quot;: &quot;dummy&quot;,
+      &quot;ram&quot;: 8192
+    }
+  ],
+  &quot;status&quot;: &quot;ok&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-sizes-from-a-wrong-driver-with-http">
+<h5>GET sizes from a wrong driver with http<a class="headerlink" href="#get-sizes-from-a-wrong-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv GET http://localhost:5050/api/v1/sizes/wrong_driver
+<span class="ansi-green">GET</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/sizes/wrong_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">500</span> <span class="ansi-cyan">INTERNAL SERVER ERROR</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">199</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:03 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQw.m5jkdQ3LAmIIQ62erQtBQl5ckfo; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;message&quot;</span>: <span class="ansi-yellow">&quot;Cloud not valid or wrong path&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;error&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_code&quot;</span>: <span class="ansi-blue">500</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_long_message&quot;</span>: <span class="ansi-yellow">&quot;Server got itself in trouble&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status_short_message&quot;</span>: <span class="ansi-yellow">&quot;Internal Server Error&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="get-sizes-from-a-wrong-driver-with-curl">
+<h5>GET sizes from a wrong driver with curl<a class="headerlink" href="#get-sizes-from-a-wrong-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X GET -H 'Content-Type: application/json' http://localhost:5050/api/v1/sizes/wrong_driver
+{
+  &quot;message&quot;: &quot;Cloud not valid or wrong path&quot;,
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;status_code&quot;: 500,
+  &quot;status_long_message&quot;: &quot;Server got itself in trouble&quot;,
+  &quot;status_short_message&quot;: &quot;Internal Server Error&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="start-and-stop-vms">
+<h2>START AND STOP VMs<a class="headerlink" href="#start-and-stop-vms" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>These endpoints describe how to create and destroy nodes using the middleware.</div></blockquote>
+<div class="section" id="start">
+<h3>START<a class="headerlink" href="#start" title="Permalink to this headline">¶</a></h3>
+<p>DESCRIPTION</p>
+<dl class="docutils">
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/vm/start{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param name:</th><td class="field-body">the name to give to the node ( not all clouds provider permits user to give names ),</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param image:</th><td class="field-body">the image id used as template</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param size:</th><td class="field-body">the size/flavor id used to forge the node&#8217;s shape</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param keyname:</th><td class="field-body">optional field, used to pass the ssh keyname</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param metadata:</th><td class="field-body">optional field, used to pass other uncategorized data</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>POST</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#start-using-the-fake-driver-with-http">Start using the fake_driver with http</a></li>
+<li><a class="reference internal" href="#start-using-the-fake-driver-with-curl">Start using the fake_driver with curl</a></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="id3">
+<h4>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="start-using-the-fake-driver-with-http">
+<h5>Start using the fake_driver with http<a class="headerlink" href="#start-using-the-fake-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv POST http://localhost:5050/api/v1/vm/start/fake_driver 'name=cloud_test' 'image=1' 'size=1'
+<span class="ansi-green">POST</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/vm/start/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">49</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;image&quot;</span>: <span class="ansi-yellow">&quot;1&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;cloud_test&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;size&quot;</span>: <span class="ansi-yellow">&quot;1&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">322</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:03 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqQw.m5jkdQ3LAmIIQ62erQtBQl5ckfo; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;nodes&quot;</span>: {
+        <span class="ansi-blue ansi-bold">&quot;cloud_type&quot;</span>: <span class="ansi-yellow">&quot;Dummy Node Provider&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;extra&quot;</span>: {
+            <span class="ansi-blue ansi-bold">&quot;foo&quot;</span>: <span class="ansi-yellow">&quot;bar&quot;</span>
+        }, 
+        <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-yellow">&quot;3&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;name&quot;</span>: <span class="ansi-yellow">&quot;dummy-3&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;private_ips&quot;</span>: [], 
+        <span class="ansi-blue ansi-bold">&quot;provider&quot;</span>: <span class="ansi-yellow">&quot;dummy&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;public_ips&quot;</span>: [
+            <span class="ansi-yellow">&quot;127.0.0.3&quot;</span>
+        ], 
+        <span class="ansi-blue ansi-bold">&quot;state&quot;</span>: <span class="ansi-blue">0</span>, 
+        <span class="ansi-blue ansi-bold">&quot;uuid&quot;</span>: <span class="ansi-yellow">&quot;aef321fde331680846014b121ff377dcb8477731&quot;</span>
+    }, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="start-using-the-fake-driver-with-curl">
+<h5>Start using the fake_driver with curl<a class="headerlink" href="#start-using-the-fake-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X POST -H 'Content-Type: application/json' -d '{  &quot;name&quot;: &quot;cloud_test&quot;, &quot;image&quot;: &quot;1&quot; , &quot;size&quot; : &quot;1&quot; }' http://localhost:5050/api/v1/vm/start/fake_driver
+{
+  &quot;nodes&quot;: {
+    &quot;cloud_type&quot;: &quot;Dummy Node Provider&quot;,
+    &quot;extra&quot;: {
+      &quot;foo&quot;: &quot;bar&quot;
+    },
+    &quot;id&quot;: &quot;4&quot;,
+    &quot;name&quot;: &quot;dummy-4&quot;,
+    &quot;private_ips&quot;: [],
+    &quot;provider&quot;: &quot;dummy&quot;,
+    &quot;public_ips&quot;: [
+      &quot;127.0.0.4&quot;
+    ],
+    &quot;state&quot;: 0,
+    &quot;uuid&quot;: &quot;f0f0f81f0a63ccd2c5e0c5244beebeafd0f2429c&quot;
+  },
+  &quot;status&quot;: &quot;ok&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="stop">
+<h3>STOP<a class="headerlink" href="#stop" title="Permalink to this headline">¶</a></h3>
+<p>DESCRIPTION</p>
+<dl class="docutils">
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/vm/stop{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param node:</th><td class="field-body">the node id to identify the node</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>PUT</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#stop-using-the-fake-driver-with-http">Stop using the fake_driver with http</a></li>
+<li><a class="reference internal" href="#stop-using-the-fake-driver-with-curl">Stop using the fake_driver with curl</a></li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="id4">
+<h4>Examples<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="stop-using-the-fake-driver-with-http">
+<h5>Stop using the fake_driver with http<a class="headerlink" href="#stop-using-the-fake-driver-with-http" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv PUT http://localhost:5050/api/v1/vm/stop/fake_driver 'node=3'
+<span class="ansi-green">PUT</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/vm/stop/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">13</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;node&quot;</span>: <span class="ansi-yellow">&quot;3&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">50</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:04 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqRA.KhgHs2LfHoD6tRyD1SH9sTJ8xKY; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;result&quot;</span>: <span class="ansi-yellow">&quot;Node 3 deleted&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="stop-using-the-fake-driver-with-curl">
+<h5>Stop using the fake_driver with curl<a class="headerlink" href="#stop-using-the-fake-driver-with-curl" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -s -X PUT -H 'Content-Type: application/json' -d '{  &quot;node&quot;: &quot;4&quot; }'    http://localhost:5050/api/v1/vm/stop/fake_driver
+{
+  &quot;result&quot;: &quot;Node 4 deleted&quot;,
+  &quot;status&quot;: &quot;ok&quot;
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="assign-and-release-vms">
+<h2>ASSIGN AND RELEASE VMs<a class="headerlink" href="#assign-and-release-vms" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>These endpoints describe how to assign and release nodes usign cistern through the middleware.</div></blockquote>
+<div class="section" id="assign">
+<h3>ASSIGN<a class="headerlink" href="#assign" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>Assign a VM to a particular user and application</div></blockquote>
+<p>DESCRIPTION</p>
+<dl class="docutils">
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/vm/action/assign{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param node:</th><td class="field-body">the node id to identify the node</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param hostname:</th><td class="field-body">alternatively to node id is possible to specify the hostname</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param user:</th><td class="field-body">the user to assign</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param vm_type:</th><td class="field-body">the application name this VM should be attached with</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>PUT</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">400:</th><td class="field-body">Param not valid</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<div class="section" id="id5">
+<h4>Examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<p>In this example an extra key is passed in data request, when the <cite>emulate</cite> parameter is passed and especially with a True value a particular routine is called and a custom default response is provided without calling Cistern facilities, this mechanism is used only with the purpose of auto-documentation.</p>
+<div class="section" id="using-http-command">
+<h5>Using &#8216;http&#8217; command<a class="headerlink" href="#using-http-command" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv PUT http://localhost:5050/api/v1/vm/action/assign/fake_driver 'node=fake_id' 'user=fake_user' 'vm_type=app_name' 'emulate=True'
+<span class="ansi-green">PUT</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/vm/action/assign/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">82</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;emulate&quot;</span>: <span class="ansi-yellow">&quot;True&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;node&quot;</span>: <span class="ansi-yellow">&quot;fake_id&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;user&quot;</span>: <span class="ansi-yellow">&quot;fake_user&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;vm_type&quot;</span>: <span class="ansi-yellow">&quot;app_name&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">95</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:04 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqRA.KhgHs2LfHoD6tRyD1SH9sTJ8xKY; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-blue">42</span>, 
+    <span class="ansi-blue ansi-bold">&quot;id_vm&quot;</span>: <span class="ansi-yellow">&quot;-fake_id-&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;result&quot;</span>: <span class="ansi-yellow">&quot;Node -fake_id- assigned&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="release">
+<h3>RELEASE<a class="headerlink" href="#release" title="Permalink to this headline">¶</a></h3>
+<p>Release a VM</p>
+<p>DESCRIPTION</p>
+<dl class="docutils">
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">http</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/vm/action/release{/&lt;cloud&gt;}</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">cloud:</th><td class="field-body">cloud to use, if not specified it will be used &#8220;default&#8221; expressed in settings</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param node:</th><td class="field-body">the node id to identify the node</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param hostname:</th><td class="field-body">alternatively to node id is possible to specify the hostname</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>METHODS</dt>
+<dd><ul class="first last simple">
+<li>PUT</li>
+</ul>
+</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">400:</th><td class="field-body">Param not valid</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">500:</th><td class="field-body">Cloud not valid</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<div class="section" id="id6">
+<h4>Examples<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<p>In this example an extra key is passed in data request, when the <cite>emulate</cite> parameter is passed and especially with a True value a particular routine is called and a custom default response is provided without calling Cistern facilities, this mechanism is used only with the purpose of auto-documentation.</p>
+<div class="section" id="id7">
+<h5>Using &#8216;http&#8217; command<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h5>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv PUT http://localhost:5050/api/v1/vm/action/release/fake_driver 'node=fake_id' 'emulate=True'
+<span class="ansi-green">PUT</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/vm/action/release/fake_driver</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">38</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5050</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;emulate&quot;</span>: <span class="ansi-yellow">&quot;True&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;node&quot;</span>: <span class="ansi-yellow">&quot;fake_id&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.0</span> <span class="ansi-blue">200</span> <span class="ansi-cyan">OK</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">95</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:05 GMT</span>
+<span class="ansi-cyan">Server</span>: <span class="ansi-yellow">Werkzeug/0.9.1 Python/2.7.3</span>
+<span class="ansi-cyan">Set-Cookie</span>: <span class="ansi-yellow">session=eyJfaWQiOnsiIGIiOiJPV0pqTjJNeVl6ZGtaRGt6TUdKa1l6RmlOemc0TldSa04yVTBaR1ppTUdFPSJ9fQ.CHLqRQ.93EePdds4caKR1WNGl0McoV2Y_U; HttpOnly; Path=/</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;id&quot;</span>: <span class="ansi-blue">42</span>, 
+    <span class="ansi-blue ansi-bold">&quot;id_vm&quot;</span>: <span class="ansi-yellow">&quot;-fake_id-&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;result&quot;</span>: <span class="ansi-yellow">&quot;Node -fake_id- assigned&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;status&quot;</span>: <span class="ansi-yellow">&quot;ok&quot;</span>
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Resources</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.html">dispatcher Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

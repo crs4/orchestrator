@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Resources &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="#" />
+    <link rel="next" title="API V.1" href="api_v1.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="#">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>Resources</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api_v1.html">API V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="resources">
+<h1>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body"><cite>Carlo Impagliazzo</cite></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Organization:</th><td class="field-body"><a class="reference external" href="http://www.crs4.it">CRS4</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Version:</th><td class="field-body">0.4.6</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">23/01/2015</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">License:</th><td class="field-body"><a class="reference external" href="http://www.gnu.org/licenses/gpl-2.0.html">GPL2 License</a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_v1.html">API V.1</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.html">dispatcher Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.components.html">components Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.html">lib Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.models.html">models Package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication V.1</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howto.html">How to...</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="manutenzione.html">Gestire la piattaforma</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Test Coverage</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="general-notes">
+<h1>General notes<a class="headerlink" href="#general-notes" title="Permalink to this headline">¶</a></h1>
+<p>This is the REST API for orchestrator project, briefly called only <cite>the orchestrator</cite> for the latter use.
+The orchestrator deals with several cloud providers using a LibCloud layer, it is able to respond in RESTful
+with Flask.
+The orchestrator is intended to be used in conjunction with Cistern project, <cite>the brain</cite>, where all decisions
+are taken and where recipes are cooked.</p>
+<p>This project is funded by:</p>
+<p>PIA - Pacchetti Integrati di Agevolazioni &#8220;Industria, Artigianato e Servizi&#8221; ( Annualita&#8217; 2010)
+Programmazione Unitaria 2007/2013
+P.O. FESR 2007/2013
+Regione Autonoma Sardegna</p>
+<img alt="_images/regione_sardegna.png" src="_images/regione_sardegna.png" />
+<div class="section" id="url-template">
+<h2>URL template<a class="headerlink" href="#url-template" title="Permalink to this headline">¶</a></h2>
+<p>The URLs all follow pattern:</p>
+<div class="highlight-python"><pre>/api/&lt;version&gt;/&lt;resource&gt;/&lt;optional cloud_name&gt;</pre>
+</div>
+<p>Optional arguments are passed using a data json stream in the request.</p>
+</div>
+<div class="section" id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>Authentication by token is implemented but actually not used</p>
+<dl class="docutils">
+<dt>More information about how to use it here:</dt>
+<dd><div class="toctree-wrapper first last compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication V.1</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="data-formatting">
+<h2>Data formatting<a class="headerlink" href="#data-formatting" title="Permalink to this headline">¶</a></h2>
+<p>Only <a class="reference external" href="http://json.org">JSON</a> is supported. The is reflected by an HTTP header of <tt class="docutils literal"><span class="pre">Content-Type:</span>
+<span class="pre">application/json</span></tt>. As per <a class="reference external" href="http://www.ietf.org/rfc/rfc4627.txt">rfc4627</a>, JSON is always encoded Unicode with a
+default encoding of UTF-8. So it is fine to include non-ASCII in the messages.</p>
+<p>For maximum compatibility, normalize to <a class="reference external" href="http://unicode.org/reports/tr15">http://unicode.org/reports/tr15</a> (Unicode
+Normalization Form C) (NFC) before UTF-8 encoding.</p>
+</div>
+<div class="section" id="error-handling">
+<h2>Error handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
+<p>Errors are indicated using standard <a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP error codes</a>. Additional information
+is usually included in the returned JSON. Specific meanings for the error codes
+are given below.</p>
+</div>
+<div class="section" id="tools-used">
+<h2>Tools used<a class="headerlink" href="#tools-used" title="Permalink to this headline">¶</a></h2>
+<p>This documentation use 2 tools to test and report codes:</p>
+<ul class="simple">
+<li>http ( httpie, from pip repository  )</li>
+<li>curl</li>
+</ul>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>There is a test coverage to verify a proper behaviour of the middleware</p>
+<p>To run tests:</p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">tests</span>
+<span class="n">python</span> <span class="n">test_rest</span><span class="p">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">test_cloud</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="api_v1.html">API V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

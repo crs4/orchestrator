@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Authentication V.1 &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="prev" title="Test Coverage" href="tests.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>Authentication V.1</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="tests.html">Test Coverage</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="authentication-v-1">
+<h1>Authentication V.1<a class="headerlink" href="#authentication-v-1" title="Permalink to this headline">¶</a></h1>
+<p>Get an authentication token</p>
+<div class="section" id="get">
+<h2>GET<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>DESCRIPTION</dt>
+<dd>Retrieve authentication token to use aftermath in authenticated calls</dd>
+<dt>URL STRUCTURE</dt>
+<dd><div class="first highlight-guess"><div class="highlight"><pre><span class="nx">https</span><span class="p">:</span><span class="c1">//www.example.com/api/&lt;version&gt;/auth</span>
+</pre></div>
+</div>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">version:</th><td class="field-body">API version.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">extension:</th><td class="field-body">json</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param username:</th><td class="field-body">user to authenticate</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param password:</th><td class="field-body">user&#8217;s password</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>VERSIONS</dt>
+<dd>v1</dd>
+<dt>ERRORS</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">200:</th><td class="field-body">Ok</td>
+</tr>
+<tr class="field-even field"><th class="field-name">403:</th><td class="field-body">Forbidden</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt>EXAMPLES</dt>
+<dd><ul class="first last simple">
+<li><a class="reference internal" href="#post-user-and-password-with-http">POST user and password with http</a></li>
+<li><a class="reference internal" href="#post-user-and-password-with-curl">POST user and password with curl</a></li>
+<li><a class="reference internal" href="#post-wrong-user-and-password-with-http">POST wrong user and password with http</a></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-user-and-password-with-http">
+<h3>POST user and password with http<a class="headerlink" href="#post-user-and-password-with-http" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv POST localhost:5000/api/v1/auth 'username=test' 'password=password'
+<span class="ansi-green">POST</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/auth</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">44</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5000</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;password&quot;</span>: <span class="ansi-yellow">&quot;password&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;username&quot;</span>: <span class="ansi-yellow">&quot;test&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span> <span class="ansi-blue">404</span> <span class="ansi-cyan">Not Found</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">93</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:05 GMT</span>
+<span class="ansi-cyan">Vary</span>: <span class="ansi-yellow">X-Auth-Token</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;error&quot;</span>: {
+        <span class="ansi-blue ansi-bold">&quot;code&quot;</span>: <span class="ansi-blue">404</span>, 
+        <span class="ansi-blue ansi-bold">&quot;message&quot;</span>: <span class="ansi-yellow">&quot;The resource could not be found.&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;title&quot;</span>: <span class="ansi-yellow">&quot;Not Found&quot;</span>
+    }
+}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="post-user-and-password-with-curl">
+<h3>POST user and password with curl<a class="headerlink" href="#post-user-and-password-with-curl" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ curl -X POST -H 'Content-Type: application/json' -d '{  &quot;username&quot;: &quot;test&quot;, &quot;password&quot;: &quot;password&quot; }' http://localhost:5000/api/v1/auth
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   140  100    93  100    47  24218  12239 --:--:-- --:--:-- --:--:-- 46500
+{&quot;error&quot;: {&quot;message&quot;: &quot;The resource could not be found.&quot;, &quot;code&quot;: 404, &quot;title&quot;: &quot;Not Found&quot;}}
+</pre>
+</div></blockquote>
+</div>
+<div class="section" id="post-wrong-user-and-password-with-http">
+<h3>POST wrong user and password with http<a class="headerlink" href="#post-wrong-user-and-password-with-http" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><pre class="ansi-block literal-block">
+$ http --pretty all -jv POST localhost:5000/api/v1/auth 'username=test' 'password=wrong_password'
+<span class="ansi-green">POST</span> <span class="ansi-underscore"></span><span class="ansi-cyan">/api/v1/auth</span> <span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span>
+<span class="ansi-cyan">Accept</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Accept-Encoding</span>: <span class="ansi-yellow">gzip, deflate, compress</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">50</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json; charset=utf-8</span>
+<span class="ansi-cyan">Host</span>: <span class="ansi-yellow">localhost:5000</span>
+<span class="ansi-cyan">User-Agent</span>: <span class="ansi-yellow">HTTPie/0.6.0</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;password&quot;</span>: <span class="ansi-yellow">&quot;wrong_password&quot;</span>, 
+    <span class="ansi-blue ansi-bold">&quot;username&quot;</span>: <span class="ansi-yellow">&quot;test&quot;</span>
+}
+
+<span class="ansi-blue">HTTP</span>/<span class="ansi-blue">1.1</span> <span class="ansi-blue">404</span> <span class="ansi-cyan">Not Found</span>
+<span class="ansi-cyan">Content-Length</span>: <span class="ansi-yellow">93</span>
+<span class="ansi-cyan">Content-Type</span>: <span class="ansi-yellow">application/json</span>
+<span class="ansi-cyan">Date</span>: <span class="ansi-yellow">Mon, 29 Jun 2015 14:40:05 GMT</span>
+<span class="ansi-cyan">Vary</span>: <span class="ansi-yellow">X-Auth-Token</span>
+
+{
+    <span class="ansi-blue ansi-bold">&quot;error&quot;</span>: {
+        <span class="ansi-blue ansi-bold">&quot;code&quot;</span>: <span class="ansi-blue">404</span>, 
+        <span class="ansi-blue ansi-bold">&quot;message&quot;</span>: <span class="ansi-yellow">&quot;The resource could not be found.&quot;</span>, 
+        <span class="ansi-blue ansi-bold">&quot;title&quot;</span>: <span class="ansi-yellow">&quot;Not Found&quot;</span>
+    }
+}
+</pre>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="tests.html">Test Coverage</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

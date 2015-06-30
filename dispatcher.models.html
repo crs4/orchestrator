@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>models Package &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="up" title="dispatcher Package" href="dispatcher.html" />
+    <link rel="next" title="Authentication V.1" href="auth.html" />
+    <link rel="prev" title="drivers Package" href="dispatcher.lib.cloud_factory.drivers.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>models Package</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.lib.cloud_factory.drivers.html">drivers Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="auth.html">Authentication V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="models-package">
+<h1>models Package<a class="headerlink" href="#models-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">models</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dispatcher.models"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>dispatcher initialization script
+This script provides the structure to the authentication layer</p>
+<dl class="class">
+<dt id="dispatcher.models.Role">
+<em class="property">class </em><tt class="descclassname">dispatcher.models.</tt><tt class="descname">Role</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/models.html#Role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.Role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_sqlalchemy.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">flask_security.core.RoleMixin</span></tt></p>
+<p>User Role</p>
+<dl class="attribute">
+<dt id="dispatcher.models.Role.description">
+<tt class="descname">description</tt><a class="headerlink" href="#dispatcher.models.Role.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Role.id">
+<tt class="descname">id</tt><a class="headerlink" href="#dispatcher.models.Role.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Role.name">
+<tt class="descname">name</tt><a class="headerlink" href="#dispatcher.models.Role.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.models.Token">
+<em class="property">class </em><tt class="descclassname">dispatcher.models.</tt><tt class="descname">Token</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/models.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_sqlalchemy.Model</span></tt></p>
+<dl class="attribute">
+<dt id="dispatcher.models.Token.active">
+<tt class="descname">active</tt><a class="headerlink" href="#dispatcher.models.Token.active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Token.creation_date">
+<tt class="descname">creation_date</tt><a class="headerlink" href="#dispatcher.models.Token.creation_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Token.id">
+<tt class="descname">id</tt><a class="headerlink" href="#dispatcher.models.Token.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Token.token">
+<tt class="descname">token</tt><a class="headerlink" href="#dispatcher.models.Token.token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Token.user">
+<tt class="descname">user</tt><a class="headerlink" href="#dispatcher.models.Token.user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.Token.user_id">
+<tt class="descname">user_id</tt><a class="headerlink" href="#dispatcher.models.Token.user_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.models.User">
+<em class="property">class </em><tt class="descclassname">dispatcher.models.</tt><tt class="descname">User</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/models.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask_sqlalchemy.Model</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">flask_security.core.UserMixin</span></tt></p>
+<p>User class inherited and overridden, in addition there is a username field,
+a new get_auth_token and a few other attributes</p>
+<dl class="attribute">
+<dt id="dispatcher.models.User.active">
+<tt class="descname">active</tt><a class="headerlink" href="#dispatcher.models.User.active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.confirmed_at">
+<tt class="descname">confirmed_at</tt><a class="headerlink" href="#dispatcher.models.User.confirmed_at" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.email">
+<tt class="descname">email</tt><a class="headerlink" href="#dispatcher.models.User.email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="dispatcher.models.User.get">
+<em class="property">static </em><tt class="descname">get</tt><big>(</big><em>userid</em><big>)</big><a class="reference internal" href="_modules/dispatcher/models.html#User.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.User.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method to search the database and see if userid exists.  If it 
+does exist then return a User Object.  If not then return None as 
+required by Flask-Login.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.models.User.get_auth_token">
+<tt class="descname">get_auth_token</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/models.html#User.get_auth_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.User.get_auth_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the user&#8217;s authentication token.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.id">
+<tt class="descname">id</tt><a class="headerlink" href="#dispatcher.models.User.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.password">
+<tt class="descname">password</tt><a class="headerlink" href="#dispatcher.models.User.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.roles">
+<tt class="descname">roles</tt><a class="headerlink" href="#dispatcher.models.User.roles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.models.User.username">
+<tt class="descname">username</tt><a class="headerlink" href="#dispatcher.models.User.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.models.populate">
+<span id="populate-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">populate</span></tt> Module<a class="headerlink" href="#module-dispatcher.models.populate" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>Provides routines to pre-populate the database</p>
+<dl class="function">
+<dt id="dispatcher.models.populate.create_roles">
+<tt class="descclassname">dispatcher.models.populate.</tt><tt class="descname">create_roles</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/models/populate.html#create_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.populate.create_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create roles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.models.populate.create_users">
+<tt class="descclassname">dispatcher.models.populate.</tt><tt class="descname">create_users</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/models/populate.html#create_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.populate.create_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create users</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.models.populate.populate_data">
+<tt class="descclassname">dispatcher.models.populate.</tt><tt class="descname">populate_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/models/populate.html#populate_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.models.populate.populate_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sequence of creation routines</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.lib.cloud_factory.drivers.html">drivers Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="auth.html">Authentication V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

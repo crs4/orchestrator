@@ -1,0 +1,967 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.components.api_v1 &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.components.api_v1</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.components.api_v1</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details.</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    ~~~~~~~~~~~</span>
+
+<span class="sd">    API level v1 blueprint</span>
+
+<span class="sd">    This blueprint provides V.1 API dialect to specific functions:</span>
+
+<span class="sd">    + :class:`RunAndStopVM` provides start and stop VMs facilities</span>
+<span class="sd">    + :class:`AssignReleaseVM` provides facilities to reserve and release VMs for users and applications</span>
+<span class="sd">    + :class:`SystemStatus` to have always the system under control</span>
+
+<span class="sd">    In `api_call_examples` file there are several examples about how to use and</span>
+<span class="sd">    deal with the middleware.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">json</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask.ext.security</span> <span class="kn">import</span> <span class="n">login_user</span>  <span class="c"># , login_required</span>
+
+<span class="kn">from</span> <span class="nn">dispatcher.components.api</span> <span class="kn">import</span> <span class="n">VMManageAPI</span>
+
+<span class="kn">from</span> <span class="nn">dispatcher.lib.helpers</span> <span class="kn">import</span> <span class="n">auth_required</span><span class="p">,</span> <span class="n">make_response</span><span class="p">,</span> <span class="n">validate_json</span>
+<span class="kn">from</span> <span class="nn">dispatcher.lib.helpers</span> <span class="kn">import</span> <span class="n">MiddlewareException</span><span class="p">,</span> <span class="n">not_implemented</span>
+<span class="kn">from</span> <span class="nn">dispatcher.lib.helpers</span> <span class="kn">import</span> <span class="n">get_a_caller</span>
+<span class="kn">from</span> <span class="nn">dispatcher.models</span> <span class="kn">import</span> <span class="n">User</span>  <span class="c"># , Role</span>
+
+<span class="kn">from</span> <span class="nn">dispatcher.lib.constants</span> <span class="kn">import</span> <span class="n">Const</span> <span class="k">as</span> <span class="n">const</span>
+
+<span class="kn">from</span> <span class="nn">schema</span> <span class="kn">import</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">And</span>  <span class="c"># , Use</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">apiv1</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="n">__name__</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s">&#39;/api/v1&#39;</span><span class="p">)</span>
+
+<span class="c">#</span>
+<span class="c"># validating schema</span>
+
+<span class="n">STARTING_PARAMS</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="s">&#39;image&#39;</span><span class="p">:</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="c"># &#39;size&#39;: And(Use(int), lambda n: 1 &lt;= n),</span>
+                          <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;keyname&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="c"># ToDo, maybe a metadata validation is needed...</span>
+                          <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">):</span> <span class="nb">dict</span><span class="p">,</span>
+                          
+                          <span class="p">})</span>
+
+
+<span class="n">STOPPING_PARAMS</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span><span class="n">Optional</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+                          <span class="p">})</span>
+
+
+<span class="n">ASSIGN_VM_PARAMS</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="s">&#39;user&#39;</span><span class="p">:</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="s">&#39;vm_type&#39;</span><span class="p">:</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;emulate&#39;</span><span class="p">):</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="n">RELEASE_VM_PARAMS</span> <span class="o">=</span> <span class="n">Schema</span><span class="p">({</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">):</span> <span class="n">And</span><span class="p">(</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+    <span class="n">Optional</span><span class="p">(</span><span class="s">&#39;emulate&#39;</span><span class="p">):</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">})</span>
+
+
+<div class="viewcode-block" id="CloudConnection"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection">[docs]</a><span class="k">class</span> <span class="nc">CloudConnection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Service Class, used to serve queries on demand routed over clouds.</span>
+
+<span class="sd">    This Class is designed to provide an uniformed layer to get</span>
+
+<span class="sd">    + :meth:`get_node`</span>
+<span class="sd">    + :meth:`get_images`</span>
+<span class="sd">    + :meth:`get_size`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.make_query"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.make_query">[docs]</a>    <span class="k">def</span> <span class="nf">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstraction to make cloud queries only here.</span>
+<span class="sd">        method is something like &#39;list_nodes&#39;.</span>
+
+<span class="sd">        This could be a good place to implement a different routine to choose</span>
+<span class="sd">        which cloud to work with.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># try:</span>
+        <span class="c">#     response = getattr(current_app.config[&#39;POOL&#39;][cloud].</span>
+        <span class="c">#                        driver, method)(**kwargs)</span>
+        <span class="c">#     return response</span>
+
+        <span class="c"># except AttributeError as e:</span>
+        <span class="c">#     LOG.error(&quot;Attribute error: %s&quot; % str(e))</span>
+        <span class="c">#     raise MiddlewareException(const.cloud_not_valid, &#39;json&#39;,</span>
+        <span class="c">#                               state=const.ERROR,</span>
+        <span class="c">#                               code=400)</span>
+
+        <span class="c"># except Exception as e:</span>
+        <span class="c">#     LOG.error(&quot;Something went wrong with your connection: %s&quot; % str(e))</span>
+        <span class="c">#     raise MiddlewareException(const.cloud_or_invalid_path, &#39;json&#39;,</span>
+        <span class="c">#                               state=const.ERROR,</span>
+        <span class="c">#                               code=500)</span>
+        <span class="n">max_iterations</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MAX_ITERATIONS&#39;</span><span class="p">,</span> 
+                                                <span class="n">const</span><span class="o">.</span><span class="n">MAX_ITERATIONS</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span> <span class="n">max_iterations</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">MAX_ITERATIONS</span><span class="p">)):</span>
+
+            <span class="n">query</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;POOL&#39;</span><span class="p">][</span><span class="n">cloud</span><span class="p">]</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="n">response</span> <span class="o">=</span> <span class="n">query</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Attribute error: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">cloud_not_valid</span><span class="p">,</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                          <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                          <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&quot;401&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Refreshing connection: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cloud</span><span class="p">)</span>
+                    
+                    <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;POOL&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">refresh_driver</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cloud</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Something went wrong with your connection: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">cloud_or_invalid_path</span><span class="p">,</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.fetch_object_by_field"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.fetch_object_by_field">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_object_by_field</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">id_obj</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        General fetching routine filtered by field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">id_obj</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.fetch_object_by_id"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.fetch_object_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_object_by_id</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">id_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        General fetch routine by some ids</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">field</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span>
+        <span class="k">return</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">fetch_object_by_field</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span>
+                                                     <span class="n">id_obj</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.get_image"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.get_image">[docs]</a>    <span class="k">def</span> <span class="nf">get_image</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">id_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get a particular image by id from your favorite cloud</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># is it possible libcloud is unable to get a single specific image ?!</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">fetch_object_by_id</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span>
+                                                      <span class="n">const</span><span class="o">.</span><span class="n">list_images</span><span class="p">,</span>
+                                                      <span class="n">id_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;no useful image id here&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.get_size"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.get_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">id_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get a particular flavor by id from your favorite cloud</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># is it possible libcloud is unable to get a single specific image ?!</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">fetch_object_by_id</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span>
+                                                      <span class="n">const</span><span class="o">.</span><span class="n">list_sizes</span><span class="p">,</span> <span class="n">id_obj</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;no useful size id here&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+</div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CloudConnection.get_node"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudConnection.get_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get a particular node by id from your favorite cloud</span>
+
+<span class="sd">        :attr:`kwargs` should contain `data`, a dictionary structured as</span>
+
+<span class="sd">        .. code-block:: guess</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &quot;node&quot; : 42,</span>
+<span class="sd">                &quot;hostname&quot; : &quot;this is an hostname&quot;</span>
+<span class="sd">            }</span>
+
+<span class="sd">        node and hostname are complementary, is strictly necessary only one of</span>
+<span class="sd">        these.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># is it possible libcloud is unable to get a single specific image ?!</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">id_node</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;node&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;hostname&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">id_node</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">hostname</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;no valid node id nor hostname here&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">list_nodes</span><span class="p">)</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">id_node</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">hostname</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">filtered</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="k">break</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">filtered</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;no useful node id here&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+</div></div>
+<div class="viewcode-block" id="CisternConnection"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CisternConnection">[docs]</a><span class="k">class</span> <span class="nc">CisternConnection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Service Class to route queries over CISTERN API</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Warm up engines &quot;&quot;&quot;</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">current_app</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller</span> <span class="o">=</span> <span class="n">get_a_caller</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cloud</span> <span class="o">=</span> <span class="n">cloud</span>
+
+<div class="viewcode-block" id="CisternConnection.get_all_nodes"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CisternConnection.get_all_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_faulty_nodes</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get all nodes from cistern &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;with_faulty_nodes&quot;</span><span class="p">:</span> <span class="n">with_faulty_nodes</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;/nodes/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cloud</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">get_page</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&quot;get&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;nodes&#39;</span><span class="p">,</span> <span class="p">[])</span>
+</div>
+<div class="viewcode-block" id="CisternConnection.get_all_active_nodes"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CisternConnection.get_all_active_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_active_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all nodes an then filter by activity.</span>
+<span class="sd">        No extra params needed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_nodes</span><span class="p">(</span><span class="n">with_faulty_nodes</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CisternConnection.get_node_by_field"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CisternConnection.get_node_by_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_by_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all nodes an then filter by a field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_nodes</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">last_message</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;message&quot;</span> <span class="p">:</span> <span class="s">&quot;Node not found&quot;</span> <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">last_status</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="CisternConnection.get_page"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CisternConnection.get_page">[docs]</a>    <span class="k">def</span> <span class="nf">get_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a request to cistern.</span>
+
+<span class="sd">        + :attr:`url` is the url to contact, protocol and servername\</span>
+<span class="sd">                is added on the fly with what has been specified on\</span>
+<span class="sd">                initialization of the object</span>
+<span class="sd">        + :attr:`kwargs` is an attribute of optional key/value pairs, should be:</span>
+<span class="sd">            * :attr:`method`, the way to contact the server, default is &#39;get&#39;,</span>
+<span class="sd">            * :attr:`payload`, is a dictionary structure containing additional\</span>
+<span class="sd">            payload useful to the request</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">get_page</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="AuthAPI"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AuthAPI">[docs]</a><span class="k">class</span> <span class="nc">AuthAPI</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Authentication endpoint class, used to get auth token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AuthAPI.post"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AuthAPI.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+        <span class="c">#data = json.loads(request.data)</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;password&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                                     <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="p">)</span> <span class="ow">and</span> <span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
+            <span class="n">login_user</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">make_response</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_auth_token</span><span class="p">())</span>
+
+        <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;Forbidden&#39;</span><span class="p">,</span>
+                                  <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="RunAndStopVM"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.RunAndStopVM">[docs]</a><span class="k">class</span> <span class="nc">RunAndStopVM</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides start and stop routines to launch VMs in the cloud</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_check_start_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;no useful parameters here&#39;</span><span class="p">,</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+    <span class="nd">@validate_json</span><span class="p">(</span><span class="n">STARTING_PARAMS</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>
+<div class="viewcode-block" id="RunAndStopVM.post"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.RunAndStopVM.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used to launch a new VM</span>
+
+<span class="sd">        `request.data` is the payload in JSON and should contain :</span>
+
+<span class="sd">        + `image` : the image identifier, a string like\</span>
+<span class="sd">                    &quot;3c725bdb-b575-4e0f-b21b-67b0d089867d&quot;</span>
+<span class="sd">        + `size` : the size/flavor identifier, same thing as images</span>
+<span class="sd">        + `metadata` : custom Key/Value metadata dictionary t0o associate\</span>
+<span class="sd">                        with a node</span>
+<span class="sd">        + `keyname` : A string containing the name of existing public key to\</span>
+<span class="sd">                     inject into instance</span>
+
+<span class="sd">        Depending cloud provider needs this class could be enhanced and\</span>
+<span class="sd">        extended, each cloud takes his own attributes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+            <span class="n">image</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">get_image</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">))</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">))</span>
+
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;ex_metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;ex_keyname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;keyname&#39;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="n">node</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">create_node</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="n">node_response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="s">&#39;uuid&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get_uuid</span><span class="p">(),</span>
+                             <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                             <span class="s">&#39;provider&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                             <span class="s">&#39;public_ips&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">public_ips</span><span class="p">,</span>
+                             <span class="s">&#39;private_ips&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">private_ips</span><span class="p">,</span>
+                             <span class="s">&#39;cloud_type&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                             <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+                             <span class="s">&#39;extra&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">extra</span>
+                             <span class="p">}</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">node_response</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="s">&#39;Something went wrong </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+                                    <span class="s">&#39;json&#39;</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</div>
+    <span class="nd">@validate_json</span><span class="p">(</span><span class="n">STOPPING_PARAMS</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>
+<div class="viewcode-block" id="RunAndStopVM.put"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.RunAndStopVM.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used to stop a VM, this is the shutdown process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&#39;node&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>  <span class="c"># just to clean the struct</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
+                    <span class="s">&#39;result&#39;</span><span class="p">:</span> <span class="s">&#39;Node </span><span class="si">%s</span><span class="s"> deleted&#39;</span> <span class="o">%</span> <span class="n">node_id</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="VMSystemMonitor"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.VMSystemMonitor">[docs]</a><span class="k">class</span> <span class="nc">VMSystemMonitor</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List instances or get a single instance status</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="VMSystemMonitor.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.VMSystemMonitor.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&#39;list&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&#39;status&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">not_implemented</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="AssignmentStatusVM"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AssignmentStatusVM">[docs]</a><span class="k">class</span> <span class="nc">AssignmentStatusVM</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Assignment status for remote clouds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AssignmentStatusVM.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AssignmentStatusVM.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support remote resources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cis_conn</span> <span class="o">=</span> <span class="n">CisternConnection</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+        <span class="n">active_nodes</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_all_active_nodes</span><span class="p">()</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">active_nodes</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">nodes</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&quot;nodes&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+            <span class="c"># NOTE(carlo): ToDo, verify if is possible to replace the code below</span>
+            <span class="c"># with a plain response = {&quot;status&quot;: const.OK, &quot;nodes&quot;: {}}</span>
+            <span class="c">#raise MiddlewareException(&#39;Something went wrong&#39;, &#39;json&#39;,</span>
+            <span class="c">#                          state=const.ERROR, code=400)</span>
+
+</div></div>
+<div class="viewcode-block" id="AssignReleaseVM"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AssignReleaseVM">[docs]</a><span class="k">class</span> <span class="nc">AssignReleaseVM</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assign / Release VM to user</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">_assign_doc_purpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The documentation part needs something to emulate a Cistern behaviour</span>
+<span class="sd">        but keeping Cistern down.</span>
+<span class="sd">        This method is intended to be used only with the purpose of</span>
+<span class="sd">        auto-documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
+                <span class="s">&quot;id_vm&quot;</span><span class="p">:</span> <span class="s">&#39;-fake_id-&#39;</span><span class="p">,</span>
+                <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+                <span class="s">&quot;result&quot;</span><span class="p">:</span> <span class="s">&quot;Node -fake_id- assigned&quot;</span>
+                <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_release_doc_purpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The documentation part needs something to emulate a Cistern behaviour</span>
+<span class="sd">        but keeping Cistern down.</span>
+<span class="sd">        This method is intended to be used only with the purpose of</span>
+<span class="sd">        auto-documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
+                <span class="s">&quot;id_vm&quot;</span><span class="p">:</span> <span class="s">&#39;-fake_id-&#39;</span><span class="p">,</span>
+                <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+                <span class="s">&quot;result&quot;</span><span class="p">:</span> <span class="s">&quot;Node -fake_id- assigned&quot;</span>
+                <span class="p">}</span>
+
+    <span class="nd">@validate_json</span><span class="p">(</span><span class="n">ASSIGN_VM_PARAMS</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_assign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support routine to assignation dues</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#app = current_app</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+        <span class="c">#data = json.loads(request.data)</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hostname</span><span class="p">:</span>
+            <span class="n">cis_conn</span> <span class="o">=</span> <span class="n">CisternConnection</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+            <span class="n">cis_node</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_node_by_field</span><span class="p">(</span><span class="s">&#39;id_vm&#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">last_status</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">cis_conn</span><span class="o">.</span><span class="n">caller</span><span class="o">.</span><span class="n">last_message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                          <span class="s">&#39;message&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">),</span>
+                                          <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                          <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                          <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+            <span class="n">hostname</span> <span class="o">=</span> <span class="n">cis_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">)</span>
+
+        <span class="n">user</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span>
+        <span class="n">vm_type</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;vm_type&#39;</span><span class="p">]</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">hostname</span><span class="p">,</span>
+                <span class="s">&quot;user&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span>
+                <span class="s">&quot;vm_type&quot;</span><span class="p">:</span> <span class="n">vm_type</span>
+                <span class="p">}</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/vm/assign/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cloud</span>
+
+        <span class="c"># caller = get_a_caller(app)</span>
+        <span class="c"># res = caller.get_page(url, method=&quot;post&quot;, payload=data)</span>
+        <span class="n">cis_conn</span> <span class="o">=</span> <span class="n">CisternConnection</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_page</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+            <span class="n">id_vm</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id_vm&#39;</span><span class="p">)</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;result&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
+                    <span class="s">&quot;id_vm&quot;</span><span class="p">:</span> <span class="n">id_vm</span><span class="p">,</span>
+                    <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+                    <span class="s">&quot;result&quot;</span><span class="p">:</span> <span class="n">result</span>
+                    <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">),</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+    <span class="nd">@validate_json</span><span class="p">(</span><span class="n">RELEASE_VM_PARAMS</span><span class="o">.</span><span class="n">validate</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support routine to release dues</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+        <span class="n">cis_conn</span> <span class="o">=</span> <span class="n">CisternConnection</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;node&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hostname</span><span class="p">:</span>
+            <span class="n">cis_node</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_node_by_field</span><span class="p">(</span><span class="s">&#39;id_vm&#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">hostname</span> <span class="o">=</span> <span class="n">cis_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+            <span class="n">cis_node</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_node_by_field</span><span class="p">(</span><span class="s">&#39;hostname&#39;</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">cis_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id_vm&#39;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">hostname</span><span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/vm/release/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cloud</span>
+
+        <span class="c"># RELEASE</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">cis_conn</span><span class="o">.</span><span class="n">get_page</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&quot;put&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+        <span class="c"># DROP</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">}</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;node&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+
+            <span class="c"># asap remove this kludge used to sync something ...</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+                <span class="n">id_vm</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id_vm&#39;</span><span class="p">)</span>
+                <span class="nb">id</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;result&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; and deleted&quot;</span>
+
+                <span class="k">return</span> <span class="p">{</span><span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
+                        <span class="s">&quot;id_vm&quot;</span><span class="p">:</span> <span class="n">id_vm</span><span class="p">,</span>
+                        <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span>
+                        <span class="s">&quot;result&quot;</span><span class="p">:</span> <span class="n">result</span>
+                        <span class="p">}</span>
+        
+        <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">,</span> <span class="s">&#39;unknown&#39;</span><span class="p">),</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AssignReleaseVM.put"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.AssignReleaseVM.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">cloud</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assign or Release resources</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&quot;assign&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;emulate&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+                <span class="c"># only for documenting purpose!</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_doc_purpose</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&quot;release&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;emulate&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+                <span class="c"># only for documenting purpose!</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assign_doc_purpose</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">not_implemented</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="ManageFirewall"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.ManageFirewall">[docs]</a><span class="k">class</span> <span class="nc">ManageFirewall</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Firewall management class, used to open and close ports</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ManageFirewall.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.ManageFirewall.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        <span class="c"># driver.ex_list_security_groups()</span>
+</div>
+<div class="viewcode-block" id="ManageFirewall.put"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.ManageFirewall.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ManageFirewall.post"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.ManageFirewall.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+</div></div>
+<div class="viewcode-block" id="ManageStorage"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.ManageStorage">[docs]</a><span class="k">class</span> <span class="nc">ManageStorage</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ToDo class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SystemStatus"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.SystemStatus">[docs]</a><span class="k">class</span> <span class="nc">SystemStatus</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Status management class, used to get the status of VMs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support routine to get nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">node_list</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">list_nodes</span><span class="p">)</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">:</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                              <span class="s">&#39;uuid&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get_uuid</span><span class="p">(),</span>
+                              <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                              <span class="s">&#39;provider&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                              <span class="s">&#39;public_ips&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">public_ips</span><span class="p">,</span>
+                              <span class="s">&#39;private_ips&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">private_ips</span><span class="p">,</span>
+                              <span class="s">&#39;cloud_type&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                              <span class="s">&#39;state&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+                              <span class="s">&#39;extra&#39;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">extra</span>
+                              <span class="p">})</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">nodes</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_flavors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support routine to get flavors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># a little patch to</span>
+        <span class="c"># https://issues.apache.org/jira/browse/LIBCLOUD-119</span>
+        <span class="n">flavor_list</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">list_sizes</span><span class="p">)</span>
+        <span class="n">flavors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">flavor</span> <span class="ow">in</span> <span class="n">flavor_list</span><span class="p">:</span>
+            <span class="n">flavors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="s">&#39;ram&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span>
+                            <span class="s">&#39;cpu&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;cpu&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                            <span class="s">&#39;disk&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">disk</span><span class="p">,</span>
+                            <span class="s">&#39;provider&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                            <span class="s">&#39;cloud_type&#39;</span><span class="p">:</span> <span class="n">flavor</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="p">})</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;flavors&#39;</span><span class="p">:</span> <span class="n">flavors</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Support routine to get images</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">images_list</span> <span class="o">=</span> <span class="n">CloudConnection</span><span class="o">.</span><span class="n">make_query</span><span class="p">(</span><span class="n">cloud</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">list_images</span><span class="p">)</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images_list</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                           <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                           <span class="s">&#39;provider&#39;</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                           <span class="s">&#39;cloud_type&#39;</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                           <span class="p">})</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;images&#39;</span><span class="p">:</span> <span class="n">images</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_tenants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cloud</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        support routine for tenants</span>
+
+<span class="sd">        ... *BUT* it&#39;s just an ugly workaround</span>
+
+<span class="sd">        *** warning *** kludge</span>
+
+<span class="sd">        .. WARNING::</span>
+<span class="sd">            this is a kludge ! this because libcloud doesn&#39;t support tenants</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">tenants</span> <span class="o">=</span> <span class="p">[{},</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">cloud</span> <span class="o">==</span> <span class="s">&quot;default&quot;</span><span class="p">:</span>
+            <span class="n">tenants</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&quot;f122fd1685b142d6830ee970900b2151&quot;</span><span class="p">,</span>
+                        <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&quot;demo&quot;</span><span class="p">,</span>
+                        <span class="s">&#39;provider&#39;</span><span class="p">:</span> <span class="s">&quot;openstack&quot;</span><span class="p">,</span>
+                        <span class="s">&#39;cloud_type&#39;</span><span class="p">:</span> <span class="s">&quot;OpenStack&quot;</span>
+                        <span class="p">}]</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;tenants&#39;</span><span class="p">:</span> <span class="n">tenants</span><span class="p">}</span>
+
+<div class="viewcode-block" id="SystemStatus.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.SystemStatus.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">cloud</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Factory GET routine, it accepts:</span>
+
+<span class="sd">        action: {flavors,images,nodes}</span>
+
+<span class="sd">        cloud: the source where we get data from, if not specified &quot;default&quot;</span>
+<span class="sd">        is choosen</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;flavors&quot;</span><span class="p">,</span> <span class="s">&quot;sizes&quot;</span><span class="p">):</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flavors</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&quot;images&quot;</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_images</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&quot;tenants&quot;</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tenants</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s">&quot;nodes&quot;</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_nodes</span><span class="p">(</span><span class="n">cloud</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MiddlewareException</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">action_not_valid</span><span class="p">,</span> <span class="s">&#39;json&#39;</span><span class="p">,</span>
+                                      <span class="n">state</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                                      <span class="n">code</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="CloudServed"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudServed">[docs]</a><span class="k">class</span> <span class="nc">CloudServed</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides a list of the served cloud pool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CloudServed.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.CloudServed.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Routine to have a list of served clouds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">driver_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">current_app</span>
+        <span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;POOL&#39;</span><span class="p">]:</span>
+            <span class="n">driver_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">driver</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">driver</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                <span class="s">&#39;host&#39;</span><span class="p">:</span> <span class="n">driver</span><span class="o">.</span><span class="n">host</span>
+                                <span class="p">})</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="s">&#39;served_cloud&#39;</span><span class="p">:</span> <span class="n">driver_list</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="FooClass"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.FooClass">[docs]</a><span class="k">class</span> <span class="nc">FooClass</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    test foo class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#@login_required</span>
+    <span class="nd">@auth_required</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="FooClass.put"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.FooClass.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">current_app</span>
+        <span class="c"># nodes = app.config[&#39;POOL&#39;].pool[0].driver.list_nodes()</span>
+        <span class="c"># nodes = app.config[&#39;POOL&#39;][0].driver.list_nodes()</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;POOL&#39;</span><span class="p">][</span><span class="s">&#39;default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">list_nodes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="s">&#39;passed&#39;</span><span class="p">,</span> <span class="n">authenticated</span><span class="o">=</span><span class="s">&#39;yes&#39;</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="HomeAPI"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.HomeAPI">[docs]</a><span class="k">class</span> <span class="nc">HomeAPI</span><span class="p">(</span><span class="n">VMManageAPI</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic root endpoint class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HomeAPI.get"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.HomeAPI.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HomeAPI.post"><a class="viewcode-back" href="../../../dispatcher.components.html#dispatcher.components.api_v1.HomeAPI.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+
+
+<span class="c">#</span>
+<span class="c"># URL</span>
+<span class="c">#</span>
+
+<span class="c"># home</span></div></div>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">HomeAPI</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1&#39;</span><span class="p">))</span>
+
+<span class="c"># cloud</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/cloud&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">CloudServed</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1_cloud&#39;</span><span class="p">))</span>
+
+<span class="c"># auth</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/auth&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">AuthAPI</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1_auth&#39;</span><span class="p">))</span>
+
+<span class="c"># vm status</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/&lt;action&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">SystemStatus</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_system_status&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/&lt;action&gt;/&lt;cloud&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">SystemStatus</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_system_status_cloud&#39;</span><span class="p">))</span>
+
+<span class="c"># vm management api</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/start&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">RunAndStopVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1_vm_run&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/start/&lt;cloud&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">RunAndStopVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_vm_run_cloud&#39;</span><span class="p">))</span>
+
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/stop&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">RunAndStopVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1_vm_stop&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/stop/&lt;cloud&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">RunAndStopVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_vm_stop_cloud&#39;</span><span class="p">))</span>
+
+<span class="c"># actions</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/action/&lt;action&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">AssignReleaseVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_assign_and_release&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/action/&lt;action&gt;/&lt;cloud&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">AssignReleaseVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_assign_and_release_cloud&#39;</span><span class="p">))</span>
+
+<span class="c"># status</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/status&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">AssignmentStatusVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_assignment_status&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/vm/status/&lt;cloud&gt;&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">AssignmentStatusVM</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_assignment_status_cloud&#39;</span><span class="p">))</span>
+
+<span class="c"># apiv1.add_url_rule(&#39;/vm/&lt;action&gt;&#39;,</span>
+    <span class="c">#view_func=AssignReleaseVM.as_view(&#39;apiv1_release&#39;))</span>
+<span class="c"># apiv1.add_url_rule(&#39;/vm/&lt;action&gt;/&lt;cloud&gt;&#39;,</span>
+<span class="c"># view_func=AssignReleaseVM.as_view(&#39;apiv1_release_cloud&#39;))</span>
+
+<span class="c"># firewall</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/fw/open&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">ManageFirewall</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_firewall_open&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/fw/close&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">ManageFirewall</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span>
+                   <span class="s">&#39;apiv1_firewall_close&#39;</span><span class="p">))</span>
+
+
+<span class="c"># TEST TEST TEST TEST</span>
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/test/start&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">FooClass</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv1k&#39;</span><span class="p">))</span>
+
+<span class="n">apiv1</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/test/&lt;int:user_id&gt;/kill&#39;</span><span class="p">,</span>
+                   <span class="n">view_func</span><span class="o">=</span><span class="n">FooClass</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;apiv12&#39;</span><span class="p">))</span>
+
+
+<span class="c"># some examples are in api_call_examples file</span>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

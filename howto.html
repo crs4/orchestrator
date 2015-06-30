@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How to... &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="next" title="Gestire la piattaforma" href="manutenzione.html" />
+    <link rel="prev" title="Authentication V.1" href="auth.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>How to...</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="auth.html">Authentication V.1</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="manutenzione.html">Gestire la piattaforma</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="how-to">
+<h1>How to...<a class="headerlink" href="#how-to" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-to-launch">
+<h2>How to launch ?<a class="headerlink" href="#how-to-launch" title="Permalink to this headline">¶</a></h2>
+<p>In a dev environment could be enough use the flask web server:</p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">middleware</span><span class="o">/</span><span class="n">orchestrator</span>
+<span class="n">python</span> <span class="n">runserver</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you want use a more reliable environment <a class="reference external" href="http://gunicorn.org/">gunicorn</a> is your pal:</p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">gunicorn</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">5070</span> <span class="n">dispatcher</span><span class="o">:</span><span class="n">app</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you want a more verbose logging you can use related directive:</p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">gunicorn</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">5070</span> <span class="o">--</span><span class="n">access</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">access_log</span> <span class="o">--</span><span class="n">error</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">error_log</span> <span class="n">dispatcher</span><span class="o">:</span><span class="n">app</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>It is also possible to configure <cite>apache</cite> to let the middleware benefits by this great web server reliability.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The <cite>apache</cite> approach must be improved, actually it is broken due to circular imports inducted by the adoption of <cite>Flask</cite> Blueprints</p>
+</div>
+</div>
+<div class="section" id="how-to-customize-it">
+<h2>How to customize it?<a class="headerlink" href="#how-to-customize-it" title="Permalink to this headline">¶</a></h2>
+<p>A good text editor is enough.</p>
+<p>It dipends on which side you intend to modify, it is likely you want to use your favorite cloud so be warned that
+Orchestrator has been built over <a class="reference external" href="http://libcloud.apache.org/">Libcloud</a>.
+The Orchestrator has been largely tested on Openstack and the Dummy driver of Libcloud, if you want to connect a different
+cloud be sure Libcloud covers the API, then <a class="reference internal" href="dispatcher.lib.html#dispatcher.lib.cloud_init.prepare_cloud_environment" title="dispatcher.lib.cloud_init.prepare_cloud_environment"><tt class="xref py py-func docutils literal"><span class="pre">prepare_cloud_environment()</span></tt></a> is your point to customize.
+Customization aspects should be to let the Orchestrator safetly logins to your cloud service.</p>
+</div>
+<div class="section" id="how-to-generate-this-doc">
+<h2>How to generate this doc?<a class="headerlink" href="#how-to-generate-this-doc" title="Permalink to this headline">¶</a></h2>
+<p>The point is ... if you are reading this, how did somebody generate it?</p>
+<p><a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> is the key and requirements point to what is necessary to build the documentation ( just a couple of additional Sphinx modules ), then :</p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">middleware</span><span class="o">/</span><span class="n">orchestrator</span>
+<span class="p">.</span><span class="o">/</span><span class="n">make_mw_docs</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>and let the flow go ahead.</p>
+<p>This script does:</p>
+<blockquote>
+<div><ul class="simple">
+<li>turns up a fake server</li>
+<li>build documentation</li>
+<li>ask for a couple of documented routines, so you can see JSON results without any effort</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>Wait a few seconds if the launching process fails, then retry, if it fails again check:</dt>
+<dd><ul class="first last simple">
+<li>the port 5050 is used? you can free this port and build the doc or modify the script ( change 5050 to whatever you want ) and propagate the same changes to <cite>docs/api_v1.rst</cite>.</li>
+<li>Are all Sphinx modules properly installed? Check &amp; retry ...</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="how-can-i-set-connection-and-configurations">
+<h2>How can I set connection and configurations?<a class="headerlink" href="#how-can-i-set-connection-and-configurations" title="Permalink to this headline">¶</a></h2>
+<p>There are several ways to do it, the simplier is to edit <a class="reference internal" href="dispatcher.html#module-dispatcher.settings" title="dispatcher.settings"><tt class="xref py py-mod docutils literal"><span class="pre">settings</span></tt></a> and modify it accordingly with your taste</p>
+</div>
+<div class="section" id="how-can-i-develop-a-new-driver-for-a-cloud-provider">
+<h2>How can I develop a new driver for a cloud provider<a class="headerlink" href="#how-can-i-develop-a-new-driver-for-a-cloud-provider" title="Permalink to this headline">¶</a></h2>
+<p>For testing purpose 4 drivers are currently developed:</p>
+<blockquote>
+<div><ul class="simple">
+<li>DUMMY = &#8216;dummy&#8217;</li>
+<li>OPENSTACK = &#8216;openstack&#8217;</li>
+<li>EUCALYPTUS = &#8216;eucalyptus&#8217;</li>
+<li>RACKSPACE = &#8216;rackspace&#8217;</li>
+</ul>
+<a class="reference internal image-reference" href="_images/classes_cloud_factory.png"><img alt="cloud class hierarchy" class="align-right" src="_images/classes_cloud_factory.png" style="width: 300.0px; height: 150.0px;" /></a>
+</div></blockquote>
+<p>Using <cite>libcloud</cite> as driver engine, each driver supported by this library is also supported by this middleware.</p>
+<p>Documentation, test coverage and instructions about how to use <cite>libcloud</cite> are downloadable <a class="reference download internal" href="_downloads/libcloud.pdf"><tt class="xref download docutils literal"><span class="pre">pdf</span></tt></a> or readable in his <a class="reference external" href="http://libcloud.readthedocs.org">official site</a> .</p>
+<p>In this pic you can find the hierarchy, every driver class have a GenericDriver parent that gives an anbstract way to wrap the libcloud driver and perform some initialization stuff to the actual driver object.</p>
+<p>To develop a new driver locate the main lib folder of the middleware and edit <cite>__init__.py</cite>, here you have to add a label to identify your new cloud, here we call this <cite>Provider</cite>.</p>
+<p>In the folder <cite>dispatcher/lib/cloud_factory</cite> edit <cite>__init__.py</cite>  is specified the connection between a <cite>Provider</cite> and his specific driver, so ... where to place the brand new driver or where to inherit an already developed one.</p>
+<p>Next step is to inherit the generic driver and override <cite>__init__</cite> and <cite>connect</cite>, e.g. we can take <cite>dispatcher/lib/cloud_factory/drivers/eucalyptus.py</cite></p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">from</span> <span class="n">libcloud</span><span class="p">.</span><span class="n">compute</span><span class="p">.</span><span class="n">types</span> <span class="n">import</span> <span class="n">Provider</span>
+<span class="n">from</span> <span class="n">libcloud</span><span class="p">.</span><span class="n">compute</span><span class="p">.</span><span class="n">providers</span> <span class="n">import</span> <span class="n">get_driver</span>
+
+<span class="n">from</span> <span class="p">.</span> <span class="n">import</span> <span class="n">GenericDriver</span>
+
+<span class="n">class</span> <span class="n">EucalyptusDriver</span><span class="p">(</span><span class="n">GenericDriver</span><span class="p">)</span><span class="o">:</span>
+    <span class="s">&quot;&quot;&quot;</span>
+        <span class="n">OpenStack</span> <span class="n">base</span> <span class="n">node</span> <span class="n">driver</span>
+    <span class="s">&quot;&quot;&quot;</span>
+    <span class="n">def</span> <span class="n">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">creds</span><span class="p">)</span><span class="o">:</span>
+        <span class="s">&quot;&quot;&quot;</span>
+        <span class="err">@</span><span class="n">param</span>  <span class="n">creds</span><span class="o">:</span> <span class="n">Credentials</span>
+
+        <span class="s">&quot;&quot;&quot;</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">creds</span> <span class="o">=</span> <span class="n">creds</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">creds</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="n">USER</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">creds</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="n">PASSWORD</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">extra</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">creds</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="n">EXTRA_PARAMS</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">extra</span><span class="p">[</span><span class="err">&#39;</span><span class="n">secret</span><span class="err">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">password</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">get_driver</span><span class="p">(</span><span class="n">Provider</span><span class="p">.</span><span class="n">EUCALYPTUS</span><span class="p">)</span>
+
+    <span class="n">def</span> <span class="n">connect</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">driver</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">user</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">password</span><span class="p">,</span> <span class="o">**</span><span class="n">self</span><span class="p">.</span><span class="n">extra</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">driver</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Libcloud&#8217;s aim is to abstract connections to clouds making them as close as possible, here <cite>__init__</cite> purpose is to
+express the proper way to use the libcloud driver.</p>
+<p>Eucalyptus driver is a good example, his libcloud connection parameters are slightly different compared with other drivers so,
+in order to use same parameters in <a class="reference internal" href="dispatcher.html#module-dispatcher.settings" title="dispatcher.settings"><tt class="xref py py-mod docutils literal"><span class="pre">settings</span></tt></a> we need to have a map in the initialization routine in this class.</p>
+<p>To enable you driver you have to express the configuration environment in <a class="reference internal" href="dispatcher.html#module-dispatcher.settings" title="dispatcher.settings"><tt class="xref py py-mod docutils literal"><span class="pre">settings</span></tt></a></p>
+<blockquote>
+<div><div class="highlight-guess"><div class="highlight"><pre><span class="n">class</span> <span class="n">CloudConfig</span><span class="p">(</span><span class="n">object</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">CLOUD_FARM</span> <span class="o">=</span> <span class="p">{</span>
+               <span class="err">&#39;</span><span class="k">default</span><span class="err">&#39;</span><span class="o">:</span> <span class="p">{</span> <span class="err">&#39;</span><span class="n">ENGINE</span><span class="err">&#39;</span> <span class="o">:</span> <span class="n">Provider</span><span class="p">.</span><span class="n">EUCALYPTUS</span><span class="p">,</span>
+
+                               <span class="err">&#39;</span><span class="n">USER</span><span class="err">&#39;</span> <span class="o">:</span> <span class="err">&#39;</span><span class="n">eucalyptus_access_key</span><span class="err">&#39;</span><span class="p">,</span>
+
+                               <span class="err">&#39;</span><span class="n">PASSWORD</span><span class="err">&#39;</span> <span class="o">:</span> <span class="err">&#39;</span><span class="n">eucalyptus_password_key</span><span class="err">&#39;</span><span class="p">,</span>
+
+                               <span class="err">&#39;</span><span class="n">EXTRA_PARAMS</span><span class="err">&#39;</span><span class="o">:</span> <span class="p">{</span>
+                                            <span class="err">&#39;</span><span class="n">host</span><span class="err">&#39;</span><span class="o">:</span> <span class="s">&quot;eucalyptus.ecc.eucalyptus.com&quot;</span><span class="p">,</span>
+                                            <span class="err">&#39;</span><span class="n">secure</span><span class="err">&#39;</span> <span class="o">:</span> <span class="n">False</span><span class="p">,</span>
+                                            <span class="err">&#39;</span><span class="n">port</span><span class="err">&#39;</span> <span class="o">:</span> <span class="mi">8773</span><span class="p">,</span>
+                                            <span class="err">&#39;</span><span class="n">path</span><span class="err">&#39;</span> <span class="o">:</span> <span class="s">&quot;/services/Eucalyptus&quot;</span>
+                                               <span class="p">}</span>
+                                <span class="p">}</span>
+
+                  <span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="docutils">
+<dt><cite>default</cite> is the default cloud, each cloud item must be a key-value item and must define:</dt>
+<dd><ul class="first last simple">
+<li>a unique name, in the example <cite>default</cite></li>
+<li><cite>ENGINE</cite></li>
+<li>credentials, if the cloud driver needs it</li>
+<li><cite>EXTRA_PARAMS</cite>, miscellaneous data</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="auth.html">Authentication V.1</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="manutenzione.html">Gestire la piattaforma</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

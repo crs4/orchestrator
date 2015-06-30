@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dispatcher.__init__ &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="../../_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="../../index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>dispatcher.__init__</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="../../search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for dispatcher.__init__</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="c"># Copyright 2015 CRS4</span>
+<span class="c"># All Rights Reserved.</span>
+<span class="c">#</span>
+<span class="c">#    Licensed under the GNU General Public License, version 2 (the &quot;License&quot;);</span>
+<span class="c">#    you may not use this file except in compliance with the License. You may</span>
+<span class="c">#    obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#         http://www.gnu.org/licenses/gpl-2.0.html</span>
+<span class="c">#</span>
+<span class="c">#    Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#    distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c">#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c">#    License for the specific language governing permissions and limitations</span>
+<span class="c">#    under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. include:: isonum.txt</span>
+<span class="sd">    :copyright: |copy| 2015 by CRS4.</span>
+<span class="sd">    :license: gpl-2, see License for more details.</span>
+
+<span class="sd">    Dispatcher initialization script.</span>
+<span class="sd">    </span>
+<span class="sd">    Dispatcher is the core of the Orchestrator, it provides a RESTful API web service with</span>
+<span class="sd">    a JSON dialect.</span>
+
+
+<span class="sd">    The initialization script is not supposed to be used directly or imported.</span>
+
+<span class="sd">    In addiction to switch between development or production config file set proporly the variable:</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; DEV = True  # Debug on</span>
+<span class="sd">        &gt;&gt;&gt; DEV = False # Debug off</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">logging.handlers</span> <span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">Formatter</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">flask.ext.security</span> <span class="kn">import</span> <span class="n">Security</span><span class="p">,</span> <span class="n">SQLAlchemyUserDatastore</span><span class="p">,</span> \
+    <span class="n">UserMixin</span><span class="p">,</span> <span class="n">RoleMixin</span><span class="p">,</span> <span class="n">login_required</span>
+
+
+<span class="kn">from</span> <span class="nn">dispatcher</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">dispatcher.lib</span> <span class="kn">import</span> <span class="n">cloud_init</span>
+<span class="c"># from restapiblueprint.lib import use_pretty_default_error_handlers</span>
+
+
+<span class="c">##################################</span>
+<span class="c"># DEVELOPMENT MODE </span>
+<span class="c">##################################</span>
+<span class="n">DEV</span> <span class="o">=</span> <span class="bp">True</span>
+
+
+<div class="viewcode-block" id="configure_app"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.__init__.configure_app">[docs]</a><span class="k">def</span> <span class="nf">configure_app</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    setup the flask application using setting directives.</span>
+
+<span class="sd">    there are 3 ways to properly configure the flask app:</span>
+
+<span class="sd">    * changing ``settings.py`` content</span>
+<span class="sd">    * using the environmental variable ``MIDDLEWARE_SETTINGS``</span>
+<span class="sd">    * using a custom python file ``settings_local.cfg``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">DEV</span><span class="p">:</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DevelopmentConfig</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">setup</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">ProductionConfig</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">setup</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_envvar</span><span class="p">(</span><span class="s">&#39;MIDDLEWARE_SETTINGS&#39;</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c"># cloud configuration</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">CloudConfig</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;POOL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cloud_init</span><span class="o">.</span><span class="n">prepare_cloud_environment</span><span class="p">(</span>
+                                                    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;CLOUD_FARM&#39;</span><span class="p">])</span>
+    <span class="c"># parent directory</span>
+    <span class="n">here</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">__file__</span> <span class="p">))</span>
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">here</span><span class="p">),</span> <span class="s">&#39;settings_local.cfg&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_path</span><span class="p">):</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_pyfile</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="setup_logging"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.__init__.setup_logging">[docs]</a><span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    setup logging facilities on setting directives</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log_file_path</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;LOG_FILE&#39;</span><span class="p">)</span>
+    <span class="n">log_level</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;LOG_LEVEL&#39;</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">log_file_path</span><span class="p">:</span>
+        <span class="n">file_handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">)</span>
+        <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="s">&#39;</span><span class="si">%(name)s</span><span class="s">:</span><span class="si">%(levelname)s</span><span class="s">:[</span><span class="si">%(asctime)s</span><span class="s">] </span><span class="si">%(message)s</span><span class="s"> &#39;</span>
+            <span class="s">&#39;[in </span><span class="si">%(pathname)s</span><span class="s">:</span><span class="si">%(lineno)d</span><span class="s">]&#39;</span>
+            <span class="p">))</span>
+        <span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;dispatcher&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="create_app"><a class="viewcode-back" href="../../dispatcher.html#dispatcher.__init__.create_app">[docs]</a><span class="k">def</span> <span class="nf">create_app</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to create a configured flask application</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="n">configure_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="c">#    setup_error_email(app)</span>
+    <span class="n">setup_logging</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+
+<span class="c"># (Keep pyflakes quiet)</span>
+<span class="c">#restapiblueprint.views</span>
+
+</div>
+<span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">dispatcher.views</span>
+<span class="kn">from</span> <span class="nn">dispatcher.database</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+
+
+
+<span class="kn">from</span> <span class="nn">dispatcher.models</span> <span class="kn">import</span> <span class="n">db</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Role</span>
+
+<span class="c"># Setup Flask-Security</span>
+<span class="n">user_datastore</span> <span class="o">=</span> <span class="n">SQLAlchemyUserDatastore</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Role</span><span class="p">)</span>
+<span class="n">security</span> <span class="o">=</span> <span class="n">Security</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">user_datastore</span><span class="p">)</span>
+</pre></div>
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Test Coverage &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="next" title="Authentication V.1" href="auth.html" />
+    <link rel="prev" title="Gestire la piattaforma" href="manutenzione.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>Test Coverage</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="manutenzione.html">Gestire la piattaforma</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="auth.html">Authentication V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="test-coverage">
+<h1>Test Coverage<a class="headerlink" href="#test-coverage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="approccio">
+<h2>Approccio<a class="headerlink" href="#approccio" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/classes_tests.png"><img alt="api class hierarchy" class="align-center" src="_images/classes_tests.png" style="width: 450.0px; height: 225.0px;" /></a>
+<p>I test sono svolti con due approcci differenti, col primo si verifica la connettivita&#8217; e la funzionalita&#8217; dei moduli, col secondo si verifica la funzionalita&#8217; dei wrapper dei driver per il cloud, delegando il testing del funzionamento effettivo alla consolidata libreria <cite>libcloud</cite> su cui ci si basa pesantemente e per la quale esistono gia&#8217; i test.</p>
+<p>Per la documentazione relativa allo sviluppo di libcloud, copertura test, ed utilizzo generico e&#8217; possibile scaricare  <a class="reference download internal" href="_downloads/libcloud.pdf"><tt class="xref download docutils literal"><span class="pre">la</span> <span class="pre">guida</span> <span class="pre">ufficiale</span></tt></a> o consultare il <a class="reference external" href="http://libcloud.readthedocs.org">sito ufficiale</a> .</p>
+</div>
+<div class="section" id="test-rest">
+<h2>Test REST<a class="headerlink" href="#test-rest" title="Permalink to this headline">¶</a></h2>
+<p>In questa unita&#8217; di test vengono fatti dei test sulla connettivita&#8217; sul web service per il recupero delle informazioni da dei cloud provider.</p>
+<div class="section" id="testconnectionv1">
+<h3>TestConnectionV1<a class="headerlink" href="#testconnectionv1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Test sulla connettivita&#8217; verso il webservice Orchestrator</p>
+<blockquote>
+<div><ul class="simple">
+<li>test connection</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="testfakecloudstatusv1">
+<h3>TestFakeCloudStatusV1<a class="headerlink" href="#testfakecloudstatusv1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Test sul recupero informazioni legate allo status</p>
+<blockquote>
+<div><ul class="simple">
+<li>nodes</li>
+</ul>
+<p>Test sul recupero informazioni legate ai flavors ( ossia l&#8217;aggregazione tra &#8220;cpu&#8221; / &#8220;disk&#8221; / &#8220;ram&#8221; )</p>
+<blockquote>
+<div><ul class="simple">
+<li>flavors</li>
+</ul>
+</div></blockquote>
+<p>Test sul recupero informazioni legate alle immagini disponibili</p>
+<blockquote>
+<div><ul class="simple">
+<li>images</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="testfakecloudmngv1">
+<h3>TestFakeCloudMNGV1<a class="headerlink" href="#testfakecloudmngv1" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Test sull&#8217;avvio e lo spegnimento di una macchina virtuale</p>
+<blockquote>
+<div><ul class="simple">
+<li>test_run_and_close_vm</li>
+</ul>
+<p>Test sull&#8217;assegnazione e rilascio di una macchina virtuale</p>
+<blockquote>
+<div><ul class="simple">
+<li>test_assign_and_release_vm</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<div class="highlight-guess"><div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">python</span> <span class="n">test_rest</span><span class="p">.</span><span class="n">py</span>
+
+ <span class="o">*</span> <span class="n">Running</span> <span class="n">on</span> <span class="n">http</span><span class="o">:</span><span class="c1">//127.0.0.1:4009/</span>
+<span class="mf">127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">29</span><span class="p">]</span> <span class="s">&quot;POST /api/v1/auth HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">29</span><span class="p">]</span> <span class="s">&quot;PUT /api/v1/test/start HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">.127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">29</span><span class="p">]</span> <span class="s">&quot;POST /api/v1/vm/start/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">29</span><span class="p">]</span> <span class="s">&quot;PUT /api/v1/vm/action/assign/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;PUT /api/v1/vm/action/release/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">.127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;POST /api/v1/vm/start/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;PUT /api/v1/vm/stop/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">.127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;GET /api/v1/flavors/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">.127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;GET /api/v1/images/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="mf">.127.0.0.1</span> <span class="o">-</span> <span class="o">-</span> <span class="p">[</span><span class="mo">04</span><span class="o">/</span><span class="n">Feb</span><span class="o">/</span><span class="mi">2015</span> <span class="mi">15</span><span class="o">:</span><span class="mi">23</span><span class="o">:</span><span class="mi">39</span><span class="p">]</span> <span class="s">&quot;GET /api/v1/nodes/fake_driver HTTP/1.1&quot;</span> <span class="mi">200</span> <span class="o">-</span>
+<span class="p">.</span>
+<span class="o">----------------------------------------------------------------------</span>
+<span class="n">Ran</span> <span class="mi">6</span> <span class="n">tests</span> <span class="n">in</span> <span class="mf">10.482</span><span class="n">s</span>
+
+<span class="n">OK</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="test-cloud">
+<h2>Test Cloud<a class="headerlink" href="#test-cloud" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>In questa unita&#8217; di test vengono fatti due tipi di test che vengono ripetuti per eretidarieta&#8217; sulle classi specifiche per il controllo dei cloud provider</p>
+<p>Dopo il caricamento del driver nel pool restituisce il numero di oggetti correttamente caricati</p>
+<blockquote>
+<div><ul class="simple">
+<li>test_len_pool</li>
+</ul>
+</div></blockquote>
+<p>Qui si verifica che il driver effettivamente caricato sia quello che si e&#8217; chiesto di caricare</p>
+<blockquote>
+<div><ul class="simple">
+<li>test_quality_driver</li>
+</ul>
+</div></blockquote>
+<div class="highlight-guess"><div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">python</span> <span class="n">test_cloud_init</span><span class="p">.</span><span class="n">py</span>
+    <span class="p">......</span>
+    <span class="o">----------------------------------------------------------------------</span>
+    <span class="n">Ran</span> <span class="mi">6</span> <span class="n">tests</span> <span class="n">in</span> <span class="mf">0.002</span><span class="n">s</span>
+
+    <span class="n">OK</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="manutenzione.html">Gestire la piattaforma</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="auth.html">Authentication V.1</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>lib Package &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="up" title="dispatcher Package" href="dispatcher.html" />
+    <link rel="next" title="cloud_factory Package" href="dispatcher.lib.cloud_factory.html" />
+    <link rel="prev" title="components Package" href="dispatcher.components.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>lib Package</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.components.html">components Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="lib-package">
+<h1>lib Package<a class="headerlink" href="#lib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">lib</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-dispatcher.lib"></span><dl class="class">
+<dt id="dispatcher.lib.Provider">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.</tt><tt class="descname">Provider</tt><a class="reference internal" href="_modules/dispatcher/lib.html#Provider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.Provider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Defines for each of the supported providers</p>
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.DUMMY">
+<tt class="descname">DUMMY</tt><em class="property"> = 'dummy'</em><a class="headerlink" href="#dispatcher.lib.Provider.DUMMY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.EC2_EU_EAST">
+<tt class="descname">EC2_EU_EAST</tt><em class="property"> = 'ec2_eu_east'</em><a class="headerlink" href="#dispatcher.lib.Provider.EC2_EU_EAST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.EC2_EU_WEST">
+<tt class="descname">EC2_EU_WEST</tt><em class="property"> = 'ec2_eu_west'</em><a class="headerlink" href="#dispatcher.lib.Provider.EC2_EU_WEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.EC2_US_EAST">
+<tt class="descname">EC2_US_EAST</tt><em class="property"> = 'ec2_us_east'</em><a class="headerlink" href="#dispatcher.lib.Provider.EC2_US_EAST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.EC2_US_WEST">
+<tt class="descname">EC2_US_WEST</tt><em class="property"> = 'ec2_us_west'</em><a class="headerlink" href="#dispatcher.lib.Provider.EC2_US_WEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.EUCALYPTUS">
+<tt class="descname">EUCALYPTUS</tt><em class="property"> = 'eucalyptus'</em><a class="headerlink" href="#dispatcher.lib.Provider.EUCALYPTUS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.OPENSTACK">
+<tt class="descname">OPENSTACK</tt><em class="property"> = 'openstack'</em><a class="headerlink" href="#dispatcher.lib.Provider.OPENSTACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.Provider.RACKSPACE">
+<tt class="descname">RACKSPACE</tt><em class="property"> = 'rackspace'</em><a class="headerlink" href="#dispatcher.lib.Provider.RACKSPACE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.cloud_init">
+<span id="cloud-init-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cloud_init</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.cloud_init" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>cloud initialization script.</p>
+<dl class="docutils">
+<dt>..WARNING::</dt>
+<dd>it&#8217;s not supposed to be used directly nor imported.</dd>
+</dl>
+<dl class="class">
+<dt id="dispatcher.lib.cloud_init.CloudPool">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_init.</tt><tt class="descname">CloudPool</tt><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Handle the application cloud pool.</p>
+<p>ToDo:</p>
+<p>It is likely this is the best place to implement a route over clouds
+so this could be the best place where to implement it.</p>
+<dl class="method">
+<dt id="dispatcher.lib.cloud_init.CloudPool.add_driver">
+<tt class="descname">add_driver</tt><big>(</big><em>name</em>, <em>driver</em>, <em>data</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool.add_driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool.add_driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a driver in the pool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.lib.cloud_init.CloudPool.hard_refresh">
+<tt class="descname">hard_refresh</tt><big>(</big><em>pool</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool.hard_refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool.hard_refresh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.lib.cloud_init.CloudPool.refresh_driver">
+<tt class="descname">refresh_driver</tt><big>(</big><em>settings=None</em>, <em>name='None'</em>, <em>soft_refresh=True</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool.refresh_driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool.refresh_driver" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.lib.cloud_init.CloudPool.remove_driver">
+<tt class="descname">remove_driver</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool.remove_driver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool.remove_driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a driver from the pool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dispatcher.lib.cloud_init.CloudPool.soft_refresh">
+<tt class="descname">soft_refresh</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#CloudPool.soft_refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.CloudPool.soft_refresh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dispatcher.lib.cloud_init.DriverNode">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.cloud_init.</tt><tt class="descname">DriverNode</tt><big>(</big><em>name</em>, <em>driver</em>, <em>data</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#DriverNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.DriverNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Single cloud driver</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.cloud_init.load_environment">
+<tt class="descclassname">dispatcher.lib.cloud_init.</tt><tt class="descname">load_environment</tt><big>(</big><em>pool</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#load_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.load_environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read from configuration and load</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.cloud_init.prepare_cloud_environment">
+<tt class="descclassname">dispatcher.lib.cloud_init.</tt><tt class="descname">prepare_cloud_environment</tt><big>(</big><em>pool</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#prepare_cloud_environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.prepare_cloud_environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize and prepare cloud pool</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.cloud_init.prepare_pool_dict">
+<tt class="descclassname">dispatcher.lib.cloud_init.</tt><tt class="descname">prepare_pool_dict</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/cloud_init.html#prepare_pool_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.cloud_init.prepare_pool_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>support routine</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.constants">
+<span id="constants-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">constants</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.constants" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>Various constants definition</p>
+<dl class="class">
+<dt id="dispatcher.lib.constants.Const">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.constants.</tt><tt class="descname">Const</tt><a class="reference internal" href="_modules/dispatcher/lib/constants.html#Const"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.constants.Const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Abstract class used in a confort</p>
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.ERROR">
+<tt class="descname">ERROR</tt><em class="property"> = 'error'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.MAX_ITERATIONS">
+<tt class="descname">MAX_ITERATIONS</tt><em class="property"> = 3</em><a class="headerlink" href="#dispatcher.lib.constants.Const.MAX_ITERATIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.OK">
+<tt class="descname">OK</tt><em class="property"> = 'ok'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.action_not_valid">
+<tt class="descname">action_not_valid</tt><em class="property"> = 'Unrecognized action found'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.action_not_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.cloud_not_valid">
+<tt class="descname">cloud_not_valid</tt><em class="property"> = 'Cloud not valid'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.cloud_not_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.cloud_or_invalid_path">
+<tt class="descname">cloud_or_invalid_path</tt><em class="property"> = 'Cloud not valid or wrong path'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.cloud_or_invalid_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.create_node">
+<tt class="descname">create_node</tt><em class="property"> = 'create_node'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.create_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.destroy_node">
+<tt class="descname">destroy_node</tt><em class="property"> = 'destroy_node'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.destroy_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.list_images">
+<tt class="descname">list_images</tt><em class="property"> = 'list_images'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.list_images" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.list_nodes">
+<tt class="descname">list_nodes</tt><em class="property"> = 'list_nodes'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.list_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.list_sizes">
+<tt class="descname">list_sizes</tt><em class="property"> = 'list_sizes'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.list_sizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dispatcher.lib.constants.Const.not_implemented">
+<tt class="descname">not_implemented</tt><em class="property"> = 'Not implemented'</em><a class="headerlink" href="#dispatcher.lib.constants.Const.not_implemented" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dispatcher.lib.helpers">
+<span id="helpers-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">helpers</span></tt> Module<a class="headerlink" href="#module-dispatcher.lib.helpers" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">© 2015 by CRS4.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">gpl-2, see License for more details.</td>
+</tr>
+</tbody>
+</table>
+<p>Various helpers, custom exceptions, login mechanism and wrappers</p>
+<dl class="class">
+<dt id="dispatcher.lib.helpers.HTTPConnection">
+<em class="property">class </em><tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">HTTPConnection</tt><big>(</big><em>server</em>, <em>port</em>, <em>api_version</em>, <em>headers=None</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#HTTPConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.HTTPConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Class to make connections and deal with web services</p>
+<dl class="method">
+<dt id="dispatcher.lib.helpers.HTTPConnection.get_page">
+<tt class="descname">get_page</tt><big>(</big><em>url</em>, <em>method='get'</em>, <em>payload=None</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#HTTPConnection.get_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.HTTPConnection.get_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a generic call with a json response</p>
+<ul>
+<li><p class="first"><tt class="xref py py-attr docutils literal"><span class="pre">url</span></tt> is the relative url to contact, protocol and servername                is added on the fly with what has been specified on                initialization of the object</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">kwargs</span></tt> is an attribute of optional key/value pairs, should be:</dt>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">method</span></tt>, the way to contact the server, default is &#8216;get&#8217;,</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">payload</span></tt>, is a dictionary structure containing additional            payload useful to the request</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="dispatcher.lib.helpers.MiddlewareException">
+<em class="property">exception </em><tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">MiddlewareException</tt><big>(</big><em>message</em>, <em>format='json'</em>, <em>state='success'</em>, <em>code=200</em>, <em>url=None</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#MiddlewareException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.MiddlewareException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">werkzeug.exceptions.HTTPException</span></tt></p>
+<p>Cancel abortion of the current task and return with
+the given message and error code.</p>
+<dl class="method">
+<dt id="dispatcher.lib.helpers.MiddlewareException.get_response">
+<tt class="descname">get_response</tt><big>(</big><em>environ</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#MiddlewareException.get_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.MiddlewareException.get_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.helpers.auth_required">
+<tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">auth_required</tt><big>(</big><em>*auth_methods</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#auth_required"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.auth_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adaptation for security.decorators.auth_required</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.helpers.get_a_caller">
+<tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">get_a_caller</tt><big>(</big><em>app_context</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#get_a_caller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.get_a_caller" title="Permalink to this definition">¶</a></dt>
+<dd><p>With an app_context ( to access the settings data ) this routines will
+spawn a caller object to make HTTP calls.
+Settings are CISTERN_* data</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.helpers.make_response">
+<tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">make_response</tt><big>(</big><em>status=None</em>, <em>status_code=200</em>, <em>other_headers=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#make_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.make_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a suitable HTML or JSON error message response.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.helpers.not_implemented">
+<tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">not_implemented</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#not_implemented"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.not_implemented" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick function to reply with a Not implemented response</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="dispatcher.lib.helpers.validate_json">
+<tt class="descclassname">dispatcher.lib.helpers.</tt><tt class="descname">validate_json</tt><big>(</big><em>validate_function</em>, <em>default=None</em><big>)</big><a class="reference internal" href="_modules/dispatcher/lib/helpers.html#validate_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dispatcher.lib.helpers.validate_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to validate and marshal the incoming JSON.</p>
+<p>Sets request.json to the value returned from calling validate_function on
+request.json (or default() if request.json is None). If this raises
+an exception then the call stack is terminated early with a
+<a class="reference internal" href="#dispatcher.lib.helpers.MiddlewareException" title="dispatcher.lib.helpers.MiddlewareException"><tt class="xref py py-func docutils literal"><span class="pre">MiddlewareException()</span></tt></a> exception</p>
+<dl class="docutils">
+<dt>If request.json is None then default() is used. Note that</dt>
+<dd><ol class="first last arabic simple">
+<li>default is a callable which must create the default value
+(to avoid accidental re-use of mutables)</li>
+<li>the result is still passed through the validate_function
+(to ensure the invariant holds)</li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#id1"><tt class="docutils literal"><span class="pre">cloud_factory</span></tt> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#module-dispatcher.lib.cloud_factory.cloud_farm"><tt class="docutils literal"><span class="pre">cloud_farm</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.lib.cloud_factory.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html">drivers Package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#id1"><tt class="docutils literal"><span class="pre">drivers</span></tt> Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.dummy"><tt class="docutils literal"><span class="pre">dummy</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.ec2"><tt class="docutils literal"><span class="pre">ec2</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.eucalyptus"><tt class="docutils literal"><span class="pre">eucalyptus</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.openstack"><tt class="docutils literal"><span class="pre">openstack</span></tt> Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dispatcher.lib.cloud_factory.drivers.html#module-dispatcher.lib.cloud_factory.drivers.rackspace"><tt class="docutils literal"><span class="pre">rackspace</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="dispatcher.components.html">components Package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="dispatcher.lib.cloud_factory.html">cloud_factory Package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

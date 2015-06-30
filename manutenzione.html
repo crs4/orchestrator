@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gestire la piattaforma &mdash; Orchestrator REST API (0.4.6)</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/ansi.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="Orchestrator REST API (0.4.6)" href="index.html" />
+    <link rel="next" title="Test Coverage" href="tests.html" />
+    <link rel="prev" title="How to..." href="howto.html" /> 
+  </head>
+  <body>
+	<style>
+	   .search-box{  margin-top: -6px;}
+	</style>
+
+      <div class="header"><img class="rightlogo" src="_static/CRS4-colori-small.png" alt="Logo"/><h1 class="heading"><a href="index.html">
+          <span>Orchestrator API</span></a></h1>
+        <h2 class="heading"><span>Gestire la piattaforma</span></h2>
+      </div>
+      <div class="topnav">
+	<span class="search-box" style="float: left; height: 19px;">
+<div id="searchbox" style="display: none">
+    <form class="search" action="search.html" method="get" style="height: 19px;">
+      <span style="clear: none; font-size: 0.8em;">Quick search</span>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+	</span>
+      
+        <p>
+        «&#160;&#160;<a href="howto.html">How to...</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="tests.html">Test Coverage</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="gestire-la-piattaforma">
+<h1>Gestire la piattaforma<a class="headerlink" href="#gestire-la-piattaforma" title="Permalink to this headline">¶</a></h1>
+<p>Attualmente ci sono due istanze attive di Orchestrator/Cistern:</p>
+<ul class="simple">
+<li>produzione</li>
+<li>sviluppo</li>
+</ul>
+<p>Le istanze sono disallineate in termini di evoluzione, entrambe usano virtualenv per il funzionamento quindi prima di fare qualsiasi
+cosa attivare virtualenv sull&#8217;ambiente</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>produzione e sviluppo hanno due venv diversi</strong></p>
+</div>
+<p>L&#8217;istanza di produzione e&#8217; eseguita con l&#8217;utente achmed, si puo&#8217; trovare sotto:</p>
+<p><tt class="docutils literal"><span class="pre">/home/achmed/produzione/</span></tt></p>
+<p>i log ed il db si possono trovare qui:</p>
+<p><tt class="docutils literal"><span class="pre">/home/achmed/produzione/log_and_db/</span></tt></p>
+<p>L&#8217;istanza di sviluppo e&#8217; eseguita con l&#8217;utente root, si puo&#8217; trovare sotto:</p>
+<p><tt class="docutils literal"><span class="pre">/root/middleware/</span></tt></p>
+<p>i log ed il db si possono trovare qui:</p>
+<p><tt class="docutils literal"><span class="pre">/tmp/</span></tt></p>
+<p>per attivare il virtualenv in <strong>produzione</strong>:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">su</span> <span class="o">-</span> <span class="n">achmed</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="n">produzione</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>per attivare il virtualenv in <strong>sviluppo</strong>:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">middleware</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>per avviare il sistema in produzione:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">produzione</span>
+
+<span class="cp"># avvio orchestrator</span>
+<span class="n">cd</span> <span class="n">orchestrator</span>
+<span class="n">gunicorn</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">5070</span> <span class="o">--</span><span class="n">access</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">access_orche</span><span class="p">.</span><span class="n">log</span> <span class="o">--</span><span class="n">error</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">error_orche</span><span class="p">.</span><span class="n">log</span> <span class="n">dispatcher</span><span class="o">:</span><span class="n">app</span>
+
+
+<span class="cp"># avvio cistern</span>
+
+<span class="n">cd</span> <span class="p">..</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">cistern</span>
+<span class="n">gunicorn</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1</span> <span class="o">-</span><span class="n">b</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">5071</span> <span class="o">--</span><span class="n">access</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">access_log</span><span class="p">.</span><span class="n">log</span> <span class="o">--</span><span class="n">error</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">error_ciste</span><span class="p">.</span><span class="n">log</span> <span class="n">store</span><span class="o">:</span><span class="n">app</span>
+
+<span class="cp"># avvio demoni</span>
+
+<span class="n">cd</span> <span class="n">daemons</span>
+<span class="n">python</span> <span class="n">loops</span><span class="p">.</span><span class="n">py</span> <span class="n">start</span>
+<span class="n">python</span> <span class="n">cook_recipe</span><span class="p">.</span><span class="n">py</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>per avviare il sistema in sviluppo, o si segue la stessa strada del sistema in produzione ( modificando i path )
+o si possono avviare i frontend API tramite il web server di Flask</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">produzione</span>
+
+<span class="cp"># avvio orchestrator</span>
+
+<span class="n">cd</span> <span class="n">orchestrator</span>
+<span class="n">python</span> <span class="n">runserver</span><span class="p">.</span><span class="n">py</span>
+
+
+<span class="cp"># avvio cistern</span>
+
+<span class="n">cd</span> <span class="p">..</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">cistern</span>
+<span class="n">python</span> <span class="n">runserver</span><span class="p">.</span><span class="n">py</span>
+
+<span class="cp"># avvio demoni</span>
+
+<span class="n">cd</span> <span class="n">daemons</span>
+<span class="n">python</span> <span class="n">loops</span><span class="p">.</span><span class="n">py</span> <span class="n">start</span>
+
+<span class="n">python</span> <span class="n">cook_recipe</span><span class="p">.</span><span class="n">py</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>Nel sistema in sviluppo il db e&#8217; posizionato sotto /tmp/ quindi all&#8217;avvio della macchina c&#8217;e&#8217; da ricreare l&#8217;ambiente,
+sempre con virtualenv attivo:</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">orchestrator</span>
+
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">reset_db</span>
+
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">populate_db</span>
+</pre></div>
+</div>
+<p>I componenti realmente attivi sono :</p>
+<ul class="simple">
+<li>loops.py</li>
+<li>cook_recipe.py</li>
+</ul>
+<p>Per fermare eventuali automatismi identificare quale ambiente ha i due demoni attivi ( produzione e/o sviluppo ) e killarli con</p>
+<div class="highlight-guess"><div class="highlight"><pre><span class="n">cd</span> <span class="n">daemons</span>
+<span class="n">python</span> <span class="n">loops</span><span class="p">.</span><span class="n">py</span> <span class="n">stop</span>
+<span class="n">python</span> <span class="n">cook_recipe</span><span class="p">.</span><span class="n">py</span> <span class="n">stop</span>
+</pre></div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="howto.html">How to...</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="tests.html">Test Coverage</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2015, CRS4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
